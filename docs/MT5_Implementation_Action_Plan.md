@@ -348,7 +348,7 @@
 #### Market Depth
 
 - [X] Implement `get_depth()`
-- [ ] Test market depth
+- [X] Test market depth
 
 #### Subscriptions
 
@@ -371,51 +371,51 @@
 
 #### Testing & Documentation
 
-- [ ] Write unit tests
-- [ ] Write integration tests
-- [ ] Document all methods
-- [ ] Create usage examples
+- [X] Write unit tests
+- [X] Write integration tests
+- [X] Document all methods
+- [X] Create usage examples
 
 ### 4.3 MT5Terminal Class (terminal.py)
 
-- [ ] Create class skeleton
-- [ ] Implement `__init__()`
+- [X] Create class skeleton
+- [X] Implement `__init__()`
 
 #### Terminal Information
 
-- [ ] Implement `get()` unified getter
-  - [ ] All terminal attributes
-- [ ] Implement `_fetch_terminal_info()` (private)
-- [ ] Test info retrieval
+- [X] Implement `get()` unified getter
+  - [X] All terminal attributes
+- [X] Implement `_fetch_terminal_info()` (private)
+- [X] Test info retrieval
 
 #### Terminal Status
 
-- [ ] Implement `check()`
-  - [ ] All status checks
-- [ ] Test status checks
+- [X] Implement `check()`
+  - [X] All status checks
+- [X] Test status checks
 
 #### Terminal Properties
 
-- [ ] Implement `get_properties()`
-  - [ ] 'resources', 'display', 'limits', 'all'
-- [ ] Implement `_get_resources()` (private)
-- [ ] Implement `_get_display_info()` (private)
-- [ ] Implement `_get_limits()` (private)
-- [ ] Test property retrieval
+- [X] Implement `get_properties()`
+  - [X] 'resources', 'display', 'limits', 'all'
+- [X] Implement `_get_resources()` (private)
+- [X] Implement `_get_display_info()` (private)
+- [X] Implement `_get_limits()` (private)
+- [X] Test property retrieval
 
 #### Utility
 
-- [ ] Implement `get_summary()`
-- [ ] Implement `print_info()`
-- [ ] Implement `export()`
-- [ ] Implement `check_compatibility()`
-- [ ] Test utility methods
+- [X] Implement `get_summary()`
+- [X] Implement `print_info()`
+- [X] Implement `export()`
+- [X] Implement `check_compatibility()`
+- [X] Test utility methods
 
 #### Testing & Documentation
 
-- [ ] Write unit tests
-- [ ] Document all methods
-- [ ] Create usage examples
+- [X] Write unit tests
+- [X] Document all methods
+- [X] Create usage examples
 
 ---
 
