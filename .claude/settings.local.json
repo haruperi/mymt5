@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Implement Phase 3.1 - MT5Client class with full functionality\n\nImplemented comprehensive MT5Client class with the following features:\n\n## Core Features\n- Connection management (initialize, connect, disconnect, shutdown, ping)\n- Authentication (login, logout)\n- Auto-reconnection with configurable retry logic\n- Configuration management (load, save, configure)\n- Multi-account support (save, switch, list, remove accounts)\n- Event system (on, off, trigger_event)\n- Status and diagnostics (get_status, get_connection_statistics)\n- Error handling (get_error, handle_error)\n- Utility methods (reset, export_logs)\n- Context manager support\n\n## Implementation Details\n- Added 35+ methods with comprehensive docstrings\n- Renamed attributes to avoid method name conflicts:\n  - login → account_login\n  - password → account_password\n  - server → account_server\n- Implemented event-driven architecture for callbacks\n- Added connection statistics tracking\n- Implemented proper error handling and logging\n\n## Testing\n- Created comprehensive unit tests (54 tests)\n- All tests passing (100% success rate)\n- Tests cover all major functionality:\n  - Initialization and connection management\n  - Authentication and logout\n  - Auto-reconnection logic\n  - Configuration management\n  - Multi-account support\n  - Event system\n  - Status and diagnostics\n  - Error handling\n  - Utility methods\n  - Integration workflows\n\n## Examples\n- Created comprehensive example file with 10 examples:\n  - Basic connection\n  - Connection from config file\n  - Context manager usage\n  - Auto-reconnection setup\n  - Event callbacks\n  - Multi-account management\n  - Configuration management\n  - Status and diagnostics\n  - Error handling\n  - Complete workflow\n\n## Documentation\n- Updated action plan with completed tasks\n- All Phase 3.1 tasks marked as complete\n- Comprehensive docstrings for all public methods\n- Usage examples for all major features\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

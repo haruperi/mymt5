@@ -1,0 +1,8 @@
+{
+    "path": null,
+    "timeout": 30000,
+    "portable": false,
+    "auto_reconnect_enabled": true,
+    "retry_attempts": 5,
+    "retry_delay": 10
+}

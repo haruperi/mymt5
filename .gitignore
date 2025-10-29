@@ -192,3 +192,16 @@ config.ini
 .env
 
 .history/
+
+# Windows reserved device names
+nul
+con
+prn
+aux
+com1
+com2
+com3
+com4
+lpt1
+lpt2
+lpt3
