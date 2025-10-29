@@ -5,6 +5,14 @@ This module demonstrates various ways to use the MT5Client class
 for connecting to and managing MetaTrader 5 terminal connections.
 """
 
+import sys
+import os
+from pathlib import Path
+
+# Add project root to Python path to allow imports
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
 from mylogger import logger
 from mymt5.client import MT5Client
 import configparser
@@ -13,20 +21,73 @@ import configparser
 logger.info("Loading client_example module")
 
 
+def get_credentials_from_config(config_file='config.ini', section='MT5'):
+    """
+    Load MT5 credentials from config file.
+    
+    Args:
+        config_file: Path to config file (default: 'config.ini')
+        section: Section name in config file (default: 'MT5')
+    
+    Returns:
+        dict: Dictionary with 'login', 'password', 'server', and optionally 'path'
+        None: If config file or section not found
+    """
+    config = configparser.ConfigParser()
+    
+    # Resolve config file path - try current dir first, then project root
+    config_path = Path(config_file)
+    if not config_path.exists():
+        # Try in project root (parent of examples directory)
+        project_root = Path(__file__).parent.parent
+        config_path = project_root / config_file
+    
+    # Check if config file exists
+    if not config_path.exists():
+        logger.warning(f"Config file '{config_file}' not found")
+        return None
+    
+    config.read(str(config_path))
+    
+    if section not in config:
+        logger.warning(f"Section '{section}' not found in {config_file}")
+        return None
+    
+    section_config = config[section]
+    
+    credentials = {
+        'login': int(section_config.get('login')),
+        'password': section_config.get('password'),
+        'server': section_config.get('server')
+    }
+    
+    # Optional path
+    if 'path' in section_config:
+        credentials['path'] = section_config.get('path')
+    
+    return credentials
+
+
 def example_basic_connection():
     """Example 1: Basic connection to MT5."""
     print("\n" + "="*60)
     print("Example 1: Basic Connection")
     print("="*60)
 
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        return
+
     # Create client instance
     client = MT5Client()
 
     # Initialize and connect with credentials
     success = client.initialize(
-        login=61394871,
-        password="ibT7s+gnao",
-        server="Pepperstone-Demo"
+        login=creds['login'],
+        password=creds['password'],
+        server=creds['server']
     )
 
     if success:
@@ -50,35 +111,34 @@ def example_connection_from_config():
     print("Example 2: Connection from Config File")
     print("="*60)
 
-    # Read config
-    config = configparser.ConfigParser()
-    config.read('config.ini')
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        return
 
-    if 'DEMO_MT5' in config:
-        demo_config = config['DEMO_MT5']
+    # Create client with optional path from config
+    client_kwargs = {'timeout': 30000}
+    if 'path' in creds:
+        client_kwargs['path'] = creds['path']
+    
+    client = MT5Client(**client_kwargs)
 
-        client = MT5Client(
-            path=demo_config.get('path'),
-            timeout=30000
-        )
+    success = client.initialize(
+        login=creds['login'],
+        password=creds['password'],
+        server=creds['server']
+    )
 
-        success = client.initialize(
-            login=int(demo_config['login']),
-            password=demo_config['password'],
-            server=demo_config['server']
-        )
-
-        if success:
-            print("✓ Connected using config file!")
-            status = client.get_status()
-            print(f"  Terminal connected: {status['terminal_info']['connected']}")
-            print(f"  Account login: {status['account_info']['login']}")
-        else:
-            print("✗ Connection failed!")
-
-        client.shutdown()
+    if success:
+        print("✓ Connected using config file!")
+        status = client.get_status()
+        print(f"  Terminal connected: {status['terminal_info']['connected']}")
+        print(f"  Account login: {status['account_info']['login']}")
     else:
-        print("✗ DEMO_MT5 section not found in config.ini")
+        print("✗ Connection failed!")
+
+    client.shutdown()
 
 
 def example_context_manager():
@@ -87,9 +147,15 @@ def example_context_manager():
     print("Example 3: Context Manager")
     print("="*60)
 
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        return
+
     # Client automatically shuts down when exiting context
     with MT5Client() as client:
-        if client.initialize(login=61394871, password="ibT7s+gnao", server="Pepperstone-Demo"):
+        if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
             print("✓ Connected within context manager")
             print(f"  Is connected: {client.is_connected()}")
             print(f"  Ping successful: {client.ping()}")
@@ -117,8 +183,15 @@ def example_auto_reconnection():
     print(f"  Retry attempts: {client.retry_attempts}")
     print(f"  Retry delay: {client.retry_delay}s")
 
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        client.shutdown()
+        return
+
     # Connect
-    if client.initialize(login=61394871, password="ibT7s+gnao", server="Pepperstone-Demo"):
+    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
         print("✓ Connected with auto-reconnect enabled")
 
         # If connection drops, client will auto-reconnect
@@ -155,8 +228,15 @@ def example_event_callbacks():
 
     print("✓ Event callbacks registered")
 
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        client.shutdown()
+        return
+
     # Events will be triggered automatically
-    if client.initialize(login=61394871, password="ibT7s+gnao", server="Pepperstone-Demo"):
+    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
         print("✓ Connection established (connect event should fire)")
 
     client.disconnect()
@@ -173,12 +253,18 @@ def example_multi_account():
 
     client = MT5Client()
 
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        return
+
     # Save multiple accounts
     client.save_account(
         'demo_account',
-        61394871,
-        "ibT7s+gnao",
-        "Pepperstone-Demo"
+        creds['login'],
+        creds['password'],
+        creds['server']
     )
 
     print("✓ Saved demo account")
@@ -243,7 +329,14 @@ def example_status_diagnostics():
 
     client = MT5Client()
 
-    if client.initialize(login=61394871, password="ibT7s+gnao", server="Pepperstone-Demo"):
+    # Load credentials from config
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        client.shutdown()
+        return
+
+    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
         # Get comprehensive status
         status = client.get_status()
 
@@ -324,12 +417,18 @@ def example_complete_workflow():
     client.on('connect', on_connect)
     client.on('error', on_error)
 
-    # 4. Save account credentials
+    # 4. Load and save account credentials
+    creds = get_credentials_from_config()
+    if not creds:
+        print("✗ Failed to load credentials from config.ini")
+        client.shutdown()
+        return
+    
     client.save_account(
         'my_demo',
-        61394871,
-        "ibT7s+gnao",
-        "Pepperstone-Demo"
+        creds['login'],
+        creds['password'],
+        creds['server']
     )
 
     # 5. Connect using saved account
