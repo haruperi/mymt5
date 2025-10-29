@@ -263,111 +263,111 @@
 
 ### 4.1 MT5Account Class (account.py)
 
-- [ ] Create class skeleton with dependencies
-- [ ] Implement `__init__()`
+- [X] Create class skeleton with dependencies
+- [X] Implement `__init__()`
 
 #### Account Information
 
-- [ ] Implement `get()` unified getter
-  - [ ] Support for 'balance', 'equity', 'margin', etc.
-  - [ ] Return all info when attribute=None
-- [ ] Implement `_fetch_account_info()` (private)
-- [ ] Test account info retrieval
+- [X] Implement `get()` unified getter
+  - [X] Support for 'balance', 'equity', 'margin', etc.
+  - [X] Return all info when attribute=None
+- [X] Implement `_fetch_account_info()` (private)
+- [X] Test account info retrieval
 
 #### Account Status
 
-- [ ] Implement `check()` for status checks
-  - [ ] 'demo', 'authorized', 'trade_allowed', 'expert_allowed'
-- [ ] Test status checks
+- [X] Implement `check()` for status checks
+  - [X] 'demo', 'authorized', 'trade_allowed', 'expert_allowed'
+- [X] Test status checks
 
 #### Account Metrics
 
-- [ ] Implement `calculate()` for metrics
-  - [ ] 'margin_level'
-  - [ ] 'drawdown'
-  - [ ] 'health'
-  - [ ] 'margin_required'
-- [ ] Implement `_calculate_margin_level()` (private)
-- [ ] Implement `_calculate_drawdown()` (private)
-- [ ] Implement `_calculate_health_metrics()` (private)
-- [ ] Test calculations
+- [X] Implement `calculate()` for metrics
+  - [X] 'margin_level'
+  - [X] 'drawdown'
+  - [X] 'health'
+  - [X] 'margin_required'
+- [X] Implement `_calculate_margin_level()` (private)
+- [X] Implement `_calculate_drawdown()` (private)
+- [X] Implement `_calculate_health_metrics()` (private)
+- [X] Test calculations
 
 #### Credentials & Export
 
-- [ ] Implement `validate_credentials()`
-- [ ] Implement `get_summary()`
-- [ ] Implement `export()`
-- [ ] Test validation and export
+- [X] Implement `validate_credentials()`
+- [X] Implement `get_summary()`
+- [X] Implement `export()`
+- [X] Test validation and export
 
 #### Testing & Documentation
 
-- [ ] Write unit tests with mocked client
-- [ ] Write integration tests
-- [ ] Document all methods
-- [ ] Create usage examples
+- [X] Write unit tests with mocked client
+- [X] Write integration tests
+- [X] Document all methods
+- [X] Create usage examples
 
 ### 4.2 MT5Symbol Class (symbol.py)
 
-- [ ] Create class skeleton
-- [ ] Implement `__init__()`
+- [X] Create class skeleton
+- [X] Implement `__init__()`
 
 #### Symbol Discovery
 
-- [ ] Implement `get_symbols()`
-  - [ ] 'all', 'market_watch', 'group', 'search'
-- [ ] Test symbol discovery
+- [X] Implement `get_symbols()`
+  - [X] 'all', 'market_watch', 'group', 'search'
+- [X] Test symbol discovery
 
 #### Market Watch Management
 
-- [ ] Implement `initialize()`
-- [ ] Implement `manage()`
-  - [ ] 'add', 'remove', 'select', 'deselect'
-- [ ] Test market watch operations
+- [X] Implement `initialize()`
+- [X] Implement `manage()`
+  - [X] 'add', 'remove', 'select', 'deselect'
+- [X] Test market watch operations
 
 #### Symbol Information
 
-- [ ] Implement `get_info()` unified getter
-  - [ ] Support all symbol attributes
-  - [ ] Return all info when attribute=None
-- [ ] Implement `_fetch_symbol_info()` (private)
-- [ ] Implement `_update_cache()` (private)
-- [ ] Test symbol info
+- [X] Implement `get_info()` unified getter
+  - [X] Support all symbol attributes
+  - [X] Return all info when attribute=None
+- [X] Implement `_fetch_symbol_info()` (private)
+- [X] Implement `_update_cache()` (private)
+- [X] Test symbol info
 
 #### Symbol Status
 
-- [ ] Implement `check()`
-  - [ ] 'available', 'visible', 'tradable', 'market_open'
-- [ ] Test status checks
+- [X] Implement `check()`
+  - [X] 'available', 'visible', 'tradable', 'market_open'
+- [X] Test status checks
 
 #### Real-Time Prices
 
-- [ ] Implement `get_price()`
-  - [ ] 'current', 'bid', 'ask', 'last'
-- [ ] Test price retrieval
+- [X] Implement `get_price()`
+  - [X] 'current', 'bid', 'ask', 'last'
+- [X] Test price retrieval
 
 #### Market Depth
 
-- [ ] Implement `get_depth()`
+- [X] Implement `get_depth()`
 - [ ] Test market depth
 
 #### Subscriptions
 
-- [ ] Implement `subscribe()`
-- [ ] Implement `unsubscribe()`
-- [ ] Test subscriptions
+- [X] Implement `subscribe()`
+- [X] Implement `unsubscribe()`
+- [X] Test subscriptions
 
 #### Validation
 
-- [ ] Implement `validate()`
-  - [ ] 'exists', 'tradable', 'volume'
-- [ ] Implement `validate_volume()`
-- [ ] Test validation
+- [X] Implement `validate()`
+  - [X] 'exists', 'tradable', 'volume'
+- [X] Implement `validate_volume()`
+- [X] Test validation
 
 #### Utility
 
-- [ ] Implement `get_summary()`
-- [ ] Implement `export_list()`
-- [ ] Test utility methods
+- [X] Implement `get_summary()`
+- [X] Implement `export_list()`
+- [X] Test utility methods
 
 #### Testing & Documentation
 
