@@ -1,0 +1,5 @@
+- When you finish task, always check it in @docs\MT5_Implementation_Action_Plan.md
+- At the top of every file, always add from mylogger import logger to import logger for logging all processes
+- Implement one feature at a time
+- After adding a feature, write tests for it as well as example usage
+- After tests, Commit changes with clear messages

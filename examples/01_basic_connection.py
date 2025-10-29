@@ -59,6 +59,7 @@ def get_credentials_from_config(config_file='config.ini', section='MT5'):
         'login': int(section_config.get('login')),
         'password': section_config.get('password'),
         'server': section_config.get('server')
+        
     }
     
     # Optional path
