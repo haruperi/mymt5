@@ -203,6 +203,7 @@ config.ini
 .claude/
 
 .history/
+*.csv
 
 # Windows reserved device names
 nul
