@@ -1,0 +1,68 @@
+{
+    "timestamp": "2025-10-29T22:45:46.701845",
+    "client_status": {
+        "connection_state": "connected",
+        "is_connected": true,
+        "account_info": {
+            "login": 61422123,
+            "server": "Pepperstone-Demo",
+            "current_account": null
+        },
+        "auto_reconnect": {
+            "enabled": false,
+            "retry_attempts": 3,
+            "retry_delay": 5
+        },
+        "terminal_info": {
+            "community_account": true,
+            "community_connection": true,
+            "connected": true,
+            "dlls_allowed": true,
+            "trade_allowed": true,
+            "tradeapi_disabled": false,
+            "email_enabled": false,
+            "ftp_enabled": false,
+            "notifications_enabled": false,
+            "mqid": true,
+            "build": 5370,
+            "maxbars": 100000000,
+            "codepage": 0,
+            "ping_last": 138474,
+            "community_balance": 0.0,
+            "retransmission": 0.9802723250299459,
+            "company": "Pepperstone Group Limited",
+            "name": "Pepperstone MetaTrader 5",
+            "language": "English",
+            "path": "C:\\Program Files\\Pepperstone MetaTrader 5",
+            "data_path": "C:\\Users\\rharu\\AppData\\Roaming\\MetaQuotes\\Terminal\\73B7A2420D6397DFF9014A20F1201F97",
+            "commondata_path": "C:\\Users\\rharu\\AppData\\Roaming\\MetaQuotes\\Terminal\\Common"
+        },
+        "statistics": {
+            "total_attempts": 1,
+            "successful_connections": 1,
+            "failed_connections": 0,
+            "success_rate": 1.0,
+            "last_connection_time": "2025-10-29T22:45:46.699097",
+            "error_count": 0,
+            "last_error": null
+        }
+    },
+    "statistics": {
+        "total_attempts": 1,
+        "successful_connections": 1,
+        "failed_connections": 0,
+        "success_rate": 1.0,
+        "last_connection_time": "2025-10-29T22:45:46.699097",
+        "error_count": 0,
+        "last_error": null
+    },
+    "configuration": {
+        "path": null,
+        "timeout": 60000,
+        "portable": false,
+        "auto_reconnect_enabled": false,
+        "retry_attempts": 3,
+        "retry_delay": 5
+    },
+    "saved_accounts": []
+}

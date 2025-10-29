@@ -12,26 +12,26 @@
 
 ### 1.1 Environment Setup
 
-- [X] Install Python 3.8+ (recommended 3.10+)
-- [X] Install MetaTrader 5 terminal
-- [X] Create virtual environment
+- [x] Install Python 3.8+ (recommended 3.10+)
+- [x] Install MetaTrader 5 terminal
+- [x] Create virtual environment
   ```bash
   python -m venv venv
   source venv/bin/activate  # Linux/Mac
   venv\Scripts\activate     # Windows
   ```
-- [X] Install required packages
+- [x] Install required packages
   ```bash
   pip install MetaTrader5 pandas numpy python-dateutil
   ```
-- [X] Install development tools
+- [x] Install development tools
   ```bash
   pip install pytest pytest-cov black flake8 mypy
   ```
 
 ### 1.2 Project Structure
 
-- [X] Create project directory structure:
+- [x] Create project directory structure:
   ```
   mt5_trading_system/
   ├── mymt5/
@@ -79,20 +79,20 @@
 
 ### 1.3 Configuration Files
 
-- [X] Create `requirements.txt`
+- [x] Create `requirements.txt`
 - [ ] Create `setup.py`
-- [X] Create `config.example.json` with template
-- [X] Create `.gitignore` for Python projects
-- [X] Create `README.md` with project overview
-- [X] Set up logging configuration
+- [x] Create `config.example.json` with template
+- [x] Create `.gitignore` for Python projects
+- [x] Create `README.md` with project overview
+- [x] Set up logging configuration
 
 ### 1.4 Version Control
 
-- [X] Initialize Git repository
-- [X] Create `.gitignore`
-- [X] Make initial commit
-- [X] Create development branch
-- [X] Set up GitHub/GitLab repository (if team project)
+- [x] Initialize Git repository
+- [x] Create `.gitignore`
+- [x] Make initial commit
+- [x] Create development branch
+- [x] Set up GitHub/GitLab repository (if team project)
 
 ---
 
@@ -100,74 +100,77 @@
 
 ### 2.1 Enumerations (enums.py)
 
-- [X] Create `ConnectionState` enum
+- [x] Create `ConnectionState` enum
 
-  - [X] DISCONNECTED
-  - [X] CONNECTED
-  - [X] FAILED
-  - [X] INITIALIZING
-  - [X] RECONNECTING
-- [X] Create `OrderType` enum
+  - [x] DISCONNECTED
+  - [x] CONNECTED
+  - [x] FAILED
+  - [x] INITIALIZING
+  - [x] RECONNECTING
 
-  - [X] BUY
-  - [X] SELL
-  - [X] BUY_LIMIT
-  - [X] SELL_LIMIT
-  - [X] BUY_STOP
-  - [X] SELL_STOP
-  - [X] BUY_STOP_LIMIT
-  - [X] SELL_STOP_LIMIT
-- [X] Create `TimeFrame` enum
+- [x] Create `OrderType` enum
 
-  - [X] M1, M5, M15, M30
-  - [X] H1, H4
-  - [X] D1, W1, MN1
-- [X] Write unit tests for enums
+  - [x] BUY
+  - [x] SELL
+  - [x] BUY_LIMIT
+  - [x] SELL_LIMIT
+  - [x] BUY_STOP
+  - [x] SELL_STOP
+  - [x] BUY_STOP_LIMIT
+  - [x] SELL_STOP_LIMIT
+
+- [x] Create `TimeFrame` enum
+
+  - [x] M1, M5, M15, M30
+  - [x] H1, H4
+  - [x] D1, W1, MN1
+
+- [x] Write unit tests for enums
 
 ### 2.2 Utilities Class (utils.py)
 
 #### Time Operations
 
-- [X] Implement `convert_time()`
-- [X] Implement `get_time()`
-- [X] Test time conversions
+- [x] Implement `convert_time()`
+- [x] Implement `get_time()`
+- [x] Test time conversions
 
 #### Price Operations
 
-- [X] Implement `convert_price()`
-- [X] Implement `format_price()`
-- [X] Implement `round_price()`
-- [X] Test price operations
+- [x] Implement `convert_price()`
+- [x] Implement `format_price()`
+- [x] Implement `round_price()`
+- [x] Test price operations
 
 #### Volume Operations
 
-- [X] Implement `convert_volume()`
-- [X] Implement `round_volume()`
-- [X] Test volume operations
+- [x] Implement `convert_volume()`
+- [x] Implement `round_volume()`
+- [x] Test volume operations
 
 #### Type Conversions
 
-- [X] Implement `convert_type()`
-- [X] Test type conversions
+- [x] Implement `convert_type()`
+- [x] Test type conversions
 
 #### Data Formatting
 
-- [X] Implement `to_dict()`
-- [X] Implement `to_dataframe()`
-- [X] Test data formatting
+- [x] Implement `to_dict()`
+- [x] Implement `to_dataframe()`
+- [x] Test data formatting
 
 #### File Operations
 
-- [X] Implement `save()` (JSON, CSV, pickle)
-- [X] Implement `load()`
-- [X] Test file operations
+- [x] Implement `save()` (JSON, CSV, pickle)
+- [x] Implement `load()`
+- [x] Test file operations
 
 #### Calculations
 
-- [X] Implement `calculate()` helper
-- [X] Test calculations
-- [X] Write comprehensive unit tests for MT5Utils
-- [X] Document all utility functions
+- [x] Implement `calculate()` helper
+- [x] Test calculations
+- [x] Write comprehensive unit tests for MT5Utils
+- [x] Document all utility functions
 
 ---
 
@@ -177,85 +180,85 @@
 
 #### Basic Structure
 
-- [X] Create class skeleton
-- [X] Initialize attributes
-- [X] Set up logging system
+- [x] Create class skeleton
+- [x] Initialize attributes
+- [x] Set up logging system
 
 #### Connection Management
 
-- [X] Implement `__init__()`
-- [X] Implement `initialize()`
-- [X] Implement `connect()`
-- [X] Implement `disconnect()`
-- [X] Implement `shutdown()`
-- [X] Implement `is_connected()`
-- [X] Implement `ping()`
-- [X] Test connection lifecycle
+- [x] Implement `__init__()`
+- [x] Implement `initialize()`
+- [x] Implement `connect()`
+- [x] Implement `disconnect()`
+- [x] Implement `shutdown()`
+- [x] Implement `is_connected()`
+- [x] Implement `ping()`
+- [x] Test connection lifecycle
 
 #### Authentication
 
-- [X] Implement `login()`
-- [X] Implement `logout()`
-- [X] Test authentication
+- [x] Implement `login()`
+- [x] Implement `logout()`
+- [x] Test authentication
 
 #### Auto-Reconnection
 
-- [X] Implement `reconnect()`
-- [X] Implement `enable_auto_reconnect()`
-- [X] Implement `disable_auto_reconnect()`
-- [X] Implement `set_retry_attempts()`
-- [X] Implement `set_retry_delay()`
-- [X] Implement `_handle_reconnection()` (private)
-- [X] Test auto-reconnection logic
+- [x] Implement `reconnect()`
+- [x] Implement `enable_auto_reconnect()`
+- [x] Implement `disable_auto_reconnect()`
+- [x] Implement `set_retry_attempts()`
+- [x] Implement `set_retry_delay()`
+- [x] Implement `_handle_reconnection()` (private)
+- [x] Test auto-reconnection logic
 
 #### Configuration
 
-- [X] Implement `configure()`
-- [X] Implement `get_config()`
-- [X] Implement `load_config()`
-- [X] Implement `save_config()`
-- [X] Test configuration management
+- [x] Implement `configure()`
+- [x] Implement `get_config()`
+- [x] Implement `load_config()`
+- [x] Implement `save_config()`
+- [x] Test configuration management
 
 #### Multi-Account Support
 
-- [X] Implement `switch_account()`
-- [X] Implement `save_account()`
-- [X] Implement `load_account()`
-- [X] Implement `list_accounts()`
-- [X] Implement `remove_account()`
-- [X] Test multi-account features
+- [x] Implement `switch_account()`
+- [x] Implement `save_account()`
+- [x] Implement `load_account()`
+- [x] Implement `list_accounts()`
+- [x] Implement `remove_account()`
+- [x] Test multi-account features
 
 #### Event System
 
-- [X] Implement `on()` (register callback)
-- [X] Implement `off()` (unregister callback)
-- [X] Implement `trigger_event()`
-- [X] Test event callbacks
+- [x] Implement `on()` (register callback)
+- [x] Implement `off()` (unregister callback)
+- [x] Implement `trigger_event()`
+- [x] Test event callbacks
 
 #### Status & Diagnostics
 
-- [X] Implement `get_status()`
-- [X] Implement `get_connection_statistics()`
-- [X] Test status methods
+- [x] Implement `get_status()`
+- [x] Implement `get_connection_statistics()`
+- [x] Test status methods
 
 #### Error Handling
 
-- [X] Implement `get_error()`
-- [X] Implement `handle_error()`
-- [X] Test error handling
+- [x] Implement `get_error()`
+- [x] Implement `handle_error()`
+- [x] Test error handling
 
 #### Utility Methods
 
-- [X] Implement `reset()`
-- [X] Implement `export_logs()`
-- [X] Test utility methods
+- [x] Implement `reset()`
+- [x] Implement `export_logs()`
+- [x] Test utility methods
 
 #### Testing & Documentation
 
-- [X] Write unit tests for all methods
-- [X] Write integration tests
-- [X] Document all public methods
-- [X] Create usage examples
+- [x] Write unit tests for all methods
+- [x] Write integration tests
+- [x] Document all public methods
+- [x] Create usage examples
 
 ---
 
@@ -263,159 +266,159 @@
 
 ### 4.1 MT5Account Class (account.py)
 
-- [X] Create class skeleton with dependencies
-- [X] Implement `__init__()`
+- [x] Create class skeleton with dependencies
+- [x] Implement `__init__()`
 
 #### Account Information
 
-- [X] Implement `get()` unified getter
-  - [X] Support for 'balance', 'equity', 'margin', etc.
-  - [X] Return all info when attribute=None
-- [X] Implement `_fetch_account_info()` (private)
-- [X] Test account info retrieval
+- [x] Implement `get()` unified getter
+  - [x] Support for 'balance', 'equity', 'margin', etc.
+  - [x] Return all info when attribute=None
+- [x] Implement `_fetch_account_info()` (private)
+- [x] Test account info retrieval
 
 #### Account Status
 
-- [X] Implement `check()` for status checks
-  - [X] 'demo', 'authorized', 'trade_allowed', 'expert_allowed'
-- [X] Test status checks
+- [x] Implement `check()` for status checks
+  - [x] 'demo', 'authorized', 'trade_allowed', 'expert_allowed'
+- [x] Test status checks
 
 #### Account Metrics
 
-- [X] Implement `calculate()` for metrics
-  - [X] 'margin_level'
-  - [X] 'drawdown'
-  - [X] 'health'
-  - [X] 'margin_required'
-- [X] Implement `_calculate_margin_level()` (private)
-- [X] Implement `_calculate_drawdown()` (private)
-- [X] Implement `_calculate_health_metrics()` (private)
-- [X] Test calculations
+- [x] Implement `calculate()` for metrics
+  - [x] 'margin_level'
+  - [x] 'drawdown'
+  - [x] 'health'
+  - [x] 'margin_required'
+- [x] Implement `_calculate_margin_level()` (private)
+- [x] Implement `_calculate_drawdown()` (private)
+- [x] Implement `_calculate_health_metrics()` (private)
+- [x] Test calculations
 
 #### Credentials & Export
 
-- [X] Implement `validate_credentials()`
-- [X] Implement `get_summary()`
-- [X] Implement `export()`
-- [X] Test validation and export
+- [x] Implement `validate_credentials()`
+- [x] Implement `get_summary()`
+- [x] Implement `export()`
+- [x] Test validation and export
 
 #### Testing & Documentation
 
-- [X] Write unit tests with mocked client
-- [X] Write integration tests
-- [X] Document all methods
-- [X] Create usage examples
+- [x] Write unit tests with mocked client
+- [x] Write integration tests
+- [x] Document all methods
+- [x] Create usage examples
 
 ### 4.2 MT5Symbol Class (symbol.py)
 
-- [X] Create class skeleton
-- [X] Implement `__init__()`
+- [x] Create class skeleton
+- [x] Implement `__init__()`
 
 #### Symbol Discovery
 
-- [X] Implement `get_symbols()`
-  - [X] 'all', 'market_watch', 'group', 'search'
-- [X] Test symbol discovery
+- [x] Implement `get_symbols()`
+  - [x] 'all', 'market_watch', 'group', 'search'
+- [x] Test symbol discovery
 
 #### Market Watch Management
 
-- [X] Implement `initialize()`
-- [X] Implement `manage()`
-  - [X] 'add', 'remove', 'select', 'deselect'
-- [X] Test market watch operations
+- [x] Implement `initialize()`
+- [x] Implement `manage()`
+  - [x] 'add', 'remove', 'select', 'deselect'
+- [x] Test market watch operations
 
 #### Symbol Information
 
-- [X] Implement `get_info()` unified getter
-  - [X] Support all symbol attributes
-  - [X] Return all info when attribute=None
-- [X] Implement `_fetch_symbol_info()` (private)
-- [X] Implement `_update_cache()` (private)
-- [X] Test symbol info
+- [x] Implement `get_info()` unified getter
+  - [x] Support all symbol attributes
+  - [x] Return all info when attribute=None
+- [x] Implement `_fetch_symbol_info()` (private)
+- [x] Implement `_update_cache()` (private)
+- [x] Test symbol info
 
 #### Symbol Status
 
-- [X] Implement `check()`
-  - [X] 'available', 'visible', 'tradable', 'market_open'
-- [X] Test status checks
+- [x] Implement `check()`
+  - [x] 'available', 'visible', 'tradable', 'market_open'
+- [x] Test status checks
 
 #### Real-Time Prices
 
-- [X] Implement `get_price()`
-  - [X] 'current', 'bid', 'ask', 'last'
-- [X] Test price retrieval
+- [x] Implement `get_price()`
+  - [x] 'current', 'bid', 'ask', 'last'
+- [x] Test price retrieval
 
 #### Market Depth
 
-- [X] Implement `get_depth()`
-- [X] Test market depth
+- [x] Implement `get_depth()`
+- [x] Test market depth
 
 #### Subscriptions
 
-- [X] Implement `subscribe()`
-- [X] Implement `unsubscribe()`
-- [X] Test subscriptions
+- [x] Implement `subscribe()`
+- [x] Implement `unsubscribe()`
+- [x] Test subscriptions
 
 #### Validation
 
-- [X] Implement `validate()`
-  - [X] 'exists', 'tradable', 'volume'
-- [X] Implement `validate_volume()`
-- [X] Test validation
+- [x] Implement `validate()`
+  - [x] 'exists', 'tradable', 'volume'
+- [x] Implement `validate_volume()`
+- [x] Test validation
 
 #### Utility
 
-- [X] Implement `get_summary()`
-- [X] Implement `export_list()`
-- [X] Test utility methods
+- [x] Implement `get_summary()`
+- [x] Implement `export_list()`
+- [x] Test utility methods
 
 #### Testing & Documentation
 
-- [X] Write unit tests
-- [X] Write integration tests
-- [X] Document all methods
-- [X] Create usage examples
+- [x] Write unit tests
+- [x] Write integration tests
+- [x] Document all methods
+- [x] Create usage examples
 
 ### 4.3 MT5Terminal Class (terminal.py)
 
-- [X] Create class skeleton
-- [X] Implement `__init__()`
+- [x] Create class skeleton
+- [x] Implement `__init__()`
 
 #### Terminal Information
 
-- [X] Implement `get()` unified getter
-  - [X] All terminal attributes
-- [X] Implement `_fetch_terminal_info()` (private)
-- [X] Test info retrieval
+- [x] Implement `get()` unified getter
+  - [x] All terminal attributes
+- [x] Implement `_fetch_terminal_info()` (private)
+- [x] Test info retrieval
 
 #### Terminal Status
 
-- [X] Implement `check()`
-  - [X] All status checks
-- [X] Test status checks
+- [x] Implement `check()`
+  - [x] All status checks
+- [x] Test status checks
 
 #### Terminal Properties
 
-- [X] Implement `get_properties()`
-  - [X] 'resources', 'display', 'limits', 'all'
-- [X] Implement `_get_resources()` (private)
-- [X] Implement `_get_display_info()` (private)
-- [X] Implement `_get_limits()` (private)
-- [X] Test property retrieval
+- [x] Implement `get_properties()`
+  - [x] 'resources', 'display', 'limits', 'all'
+- [x] Implement `_get_resources()` (private)
+- [x] Implement `_get_display_info()` (private)
+- [x] Implement `_get_limits()` (private)
+- [x] Test property retrieval
 
 #### Utility
 
-- [X] Implement `get_summary()`
-- [X] Implement `print_info()`
-- [X] Implement `export()`
-- [X] Implement `check_compatibility()`
-- [X] Test utility methods
+- [x] Implement `get_summary()`
+- [x] Implement `print_info()`
+- [x] Implement `export()`
+- [x] Implement `check_compatibility()`
+- [x] Test utility methods
 
 #### Testing & Documentation
 
-- [X] Write unit tests
-- [X] Document all methods
-- [X] Create usage examples
+- [x] Write unit tests
+- [x] Document all methods
+- [x] Create usage examples
 
 ---
 
@@ -1009,15 +1012,19 @@ black mymt5/ tests/
 1. **MT5 API Changes**
 
    - Mitigation: Version pinning, regular updates
+
 2. **Connection Issues**
 
    - Mitigation: Robust reconnection logic, timeouts
+
 3. **Performance Issues**
 
    - Mitigation: Profiling, caching, optimization
+
 4. **Testing Challenges**
 
    - Mitigation: Mocking, test accounts, CI/CD
+
 5. **Time Overruns**
 
    - Mitigation: Prioritize core features, iterative development
@@ -1176,12 +1183,12 @@ Focus: Core functionality first, optimization later
 
 ---
 
-**Project Start Date**: _____________
-**Target Completion Date**: _____________
-**Project Manager**: _____________
-**Lead Developer**: _____________
+**Project Start Date**: ******\_******
+**Target Completion Date**: ******\_******
+**Project Manager**: ******\_******
+**Lead Developer**: ******\_******
 
 ---
 
-*Last Updated: [Date]*
-*Version: 1.0*
+_Last Updated: [Date]_
+_Version: 1.0_
