@@ -1,0 +1,67 @@
+graph TB
+    subgraph "MT5 Trading System Architecture"
+        
+        subgraph "Core Layer"
+            Client[MT5Client<br/>Connection & Configuration<br/>• Initialize/Login/Logout<br/>• Auto-reconnect<br/>• Multi-account<br/>• Event callbacks]
+        end
+        
+        subgraph "Information Layer"
+            Account[MT5Account<br/>Account Management<br/>• Balance & Equity<br/>• Margin & Leverage<br/>• Health metrics]
+            Symbol[MT5Symbol<br/>Symbol Management<br/>• Market watch<br/>• Symbol info<br/>• Real-time prices]
+            Terminal[MT5Terminal<br/>Terminal Info<br/>• Version & Build<br/>• Status checks<br/>• Properties]
+        end
+        
+        subgraph "Data Layer"
+            Data[MT5Data<br/>Market Data<br/>• OHLCV bars<br/>• Tick data<br/>• Streaming<br/>• Caching]
+            History[MT5History<br/>Trade History<br/>• Deals & Orders<br/>• Performance metrics<br/>• Reports]
+        end
+        
+        subgraph "Trading Layer"
+            Trade[MT5Trade<br/>Trading Operations<br/>• Market orders<br/>• Pending orders<br/>• Position management<br/>• Order modification]
+            Risk[MT5Risk<br/>Risk Management<br/>• Position sizing<br/>• Risk calculation<br/>• Risk limits<br/>• Validation]
+        end
+        
+        subgraph "Utility Layer"
+            Validator[MT5Validator<br/>Validation<br/>• Input validation<br/>• Business rules<br/>• Error checking]
+            Utils[MT5Utils<br/>Utilities<br/>• Conversions<br/>• Formatting<br/>• File I/O]
+        end
+        
+        %% Core dependencies
+        Client -.-> Account
+        Client -.-> Symbol
+        Client -.-> Terminal
+        Client -.-> Data
+        Client -.-> Trade
+        Client -.-> History
+        
+        %% Cross-layer dependencies
+        Trade --> Symbol
+        Trade --> Client
+        Risk --> Account
+        Risk --> Symbol
+        Risk --> Client
+        Validator --> Symbol
+        
+        %% Data flow
+        Data --> Client
+        History --> Client
+        
+        %% Styling
+        classDef coreClass fill:#4A90E2,stroke:#2E5C8A,stroke-width:3px,color:#fff
+        classDef infoClass fill:#50C878,stroke:#2D7A4A,stroke-width:2px,color:#fff
+        classDef dataClass fill:#F5A623,stroke:#C77F1B,stroke-width:2px,color:#fff
+        classDef tradeClass fill:#E74C3C,stroke:#A93226,stroke-width:2px,color:#fff
+        classDef utilClass fill:#9B59B6,stroke:#6C3483,stroke-width:2px,color:#fff
+        
+        class Client coreClass
+        class Account,Symbol,Terminal infoClass
+        class Data,History dataClass
+        class Trade,Risk tradeClass
+        class Validator,Utils utilClass
+    end
+    
+    %% External system
+    MT5Terminal_External[MetaTrader 5 Terminal]
+    Client <--> MT5Terminal_External
+    
+    style MT5Terminal_External fill:#34495E,stroke:#1C2833,stroke-width:3px,color:#ECF0F1

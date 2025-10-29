@@ -1,0 +1,305 @@
+classDiagram
+    %% Core Client Class
+    class MT5Client {
+        -config: dict
+        -connection_state: ConnectionState
+        -auto_reconnect: bool
+        -retry_attempts: int
+        -retry_delay: int
+        -callbacks: dict
+        -logger: Logger
+        
+        +__init__(config_path, auto_reconnect)
+        +initialize(path, timeout, portable) bool
+        +login(account, password, server) bool
+        +logout() bool
+        +shutdown() void
+        +connect(retry_attempts, retry_delay) bool
+        +disconnect() bool
+        +reconnect() bool
+        +is_connected() bool
+        +get_status(metric) dict
+        +configure(param, value) void
+        +get_config(param) dict
+        +load_config(file_path) void
+        +save_config(file_path) void
+        +switch_account(account, password, server) bool
+        +save_account(name, account, password, server) void
+        +load_account(name) bool
+        +list_accounts() list
+        +remove_account(name) bool
+        +on(event, callback) void
+        +off(event, callback) void
+        +trigger_event(event, data) void
+        +get_error(format) dict
+        +handle_error(error_code, context) void
+        +ping() float
+        +reset() void
+        +export_logs(file_path) void
+    }
+
+    %% Account Management Class
+    class MT5Account {
+        -client: MT5Client
+        -account_info: dict
+        -cached_data: dict
+        
+        +__init__(client)
+        +get(attribute) dict|any
+        +check(check_type) bool
+        +calculate(metric, **kwargs) float|dict
+        +validate_credentials(account, password, server) bool
+        +get_summary(format) dict|str
+        +export(file_path, format) void
+        -_fetch_account_info() dict
+        -_calculate_margin_level() float
+        -_calculate_drawdown() float
+        -_calculate_health_metrics() dict
+    }
+
+    %% Symbol Management Class
+    class MT5Symbol {
+        -client: MT5Client
+        -symbols_cache: dict
+        -subscriptions: dict
+        
+        +__init__(client)
+        +get_symbols(filter_type, filter_value) list
+        +initialize(symbols) bool
+        +manage(symbol, action) bool
+        +get_info(symbol, attribute) dict|any
+        +check(symbol, check_type) bool
+        +get_price(symbol, price_type) dict|float
+        +get_depth(symbol, depth) list
+        +subscribe(symbol, callback, data_type) bool
+        +unsubscribe(symbol, data_type) bool
+        +validate(symbol, check_type) bool
+        +validate_volume(symbol, volume) bool
+        +get_summary(symbol, format) dict|str
+        +export_list(file_path, filter_type) void
+        -_fetch_symbol_info(symbol) dict
+        -_update_cache(symbol, data) void
+    }
+
+    %% Market Data Management Class
+    class MT5Data {
+        -client: MT5Client
+        -cache: dict
+        -stream_handlers: dict
+        -cache_ttl: int
+        
+        +__init__(client)
+        +get_bars(symbol, timeframe, count, start, end) DataFrame|dict
+        +get_ticks(symbol, count, start, end, flags) DataFrame|dict
+        +stream(symbol, callback, data_type, interval) bool
+        +stop_stream(symbol) bool
+        +process(data, operation, **kwargs) DataFrame|dict
+        +cache(symbol, timeframe, data, ttl) void
+        +get_cached(symbol, timeframe) DataFrame|dict
+        +clear_cache(symbol, timeframe) void
+        +export(data, file_path, format) void
+        +get_timeframes() list
+        +convert_timeframe(value, from_format) int|str
+        +get_summary(data) dict
+        +calculate_stats(data) dict
+        -_normalize_data(data) DataFrame
+        -_clean_data(data) DataFrame
+        -_fill_missing(data, method) DataFrame
+        -_detect_gaps(data) list
+    }
+
+    %% Trading Operations Class
+    class MT5Trade {
+        -client: MT5Client
+        -symbol_manager: MT5Symbol
+        -order_cache: dict
+        -position_cache: dict
+        
+        +__init__(client, symbol_manager)
+        +execute(action, symbol, volume, **kwargs) dict
+        +buy(symbol, volume, sl, tp, **kwargs) dict
+        +sell(symbol, volume, sl, tp, **kwargs) dict
+        +get_orders(filter_type, filter_value) list
+        +modify_order(ticket, price, sl, tp, expiration) bool
+        +cancel_order(ticket, filter_type, filter_value) bool
+        +get_positions(filter_type, filter_value) list
+        +modify_position(ticket, sl, tp) bool
+        +close_position(ticket, volume, filter_type, filter_value) bool
+        +reverse_position(ticket) dict
+        +analyze_position(ticket, metric) dict|float
+        +get_position_stats(filter_type, filter_value) dict
+        +validate_request(request_dict) bool
+        +check_order(ticket) dict
+        +build_request(action, symbol, volume, **kwargs) dict
+        +get_summary(type) dict
+        +export(type, file_path, format) void
+        -_send_request(request) dict
+        -_filter_orders(orders, filter_type, filter_value) list
+        -_filter_positions(positions, filter_type, filter_value) list
+        -_calculate_position_profit(ticket) float
+    }
+
+    %% History and Analytics Class
+    class MT5History {
+        -client: MT5Client
+        -history_cache: dict
+        
+        +__init__(client)
+        +get(history_type, start, end, filter_type, filter_value) list
+        +get_today() list
+        +get_period(period) list
+        +calculate(metric, start, end, **kwargs) float|dict
+        +analyze(analysis_type, start, end, **kwargs) dict
+        +generate_report(report_type, start, end, format) dict|str
+        +export(file_path, start, end, format) void
+        +get_summary(start, end) dict
+        +print_report(report_type) void
+        -_fetch_deals(start, end) list
+        -_fetch_orders(start, end) list
+        -_calculate_win_rate(deals) float
+        -_calculate_profit_factor(deals) float
+        -_calculate_sharpe_ratio(deals) float
+        -_calculate_max_drawdown(deals) float
+        -_analyze_by_symbol(deals) dict
+        -_analyze_by_time(deals, period) dict
+    }
+
+    %% Risk Management Class
+    class MT5Risk {
+        -client: MT5Client
+        -account_manager: MT5Account
+        -symbol_manager: MT5Symbol
+        -limits: dict
+        
+        +__init__(client, account_manager, symbol_manager)
+        +calculate_size(symbol, risk, sl, method, **kwargs) float
+        +calculate_risk(symbol, volume, sl, metric) float|dict
+        +set_limit(limit_type, value) void
+        +get_limit(limit_type) dict|float
+        +validate(symbol, volume, sl, tp) tuple
+        +check(check_type, **kwargs) bool
+        +get_portfolio_risk(metric) dict|float
+        +get_summary(format) dict|str
+        +export_limits(file_path) void
+        -_calculate_position_size_percent(symbol, risk, sl) float
+        -_calculate_position_size_amount(symbol, risk, sl) float
+        -_calculate_risk_amount(symbol, volume, sl) float
+        -_calculate_risk_percent(symbol, volume, sl) float
+        -_check_risk_limits(symbol, volume, sl) bool
+        -_calculate_total_exposure() float
+        -_calculate_correlation_risk() float
+    }
+
+    %% Terminal Information Class
+    class MT5Terminal {
+        -client: MT5Client
+        -terminal_info: dict
+        
+        +__init__(client)
+        +get(attribute) dict|any
+        +check(check_type) bool
+        +get_properties(property_type) dict
+        +get_summary(format) dict|str
+        +print_info() void
+        +export(file_path) void
+        +check_compatibility() dict
+        -_fetch_terminal_info() dict
+        -_get_resources() dict
+        -_get_display_info() dict
+        -_get_limits() dict
+    }
+
+    %% Validation Utilities Class
+    class MT5Validator {
+        -symbol_manager: MT5Symbol
+        -validation_rules: dict
+        
+        +__init__(symbol_manager)
+        +validate(validation_type, **kwargs) tuple
+        +validate_multiple(validations) dict
+        +get_validation_rules(validation_type) dict
+        -_validate_symbol(**kwargs) tuple
+        -_validate_volume(**kwargs) tuple
+        -_validate_price(**kwargs) tuple
+        -_validate_stop_loss(**kwargs) tuple
+        -_validate_take_profit(**kwargs) tuple
+        -_validate_order_type(**kwargs) tuple
+        -_validate_timeframe(**kwargs) tuple
+        -_validate_date_range(**kwargs) tuple
+        -_validate_trade_request(**kwargs) tuple
+        -_validate_credentials(**kwargs) tuple
+    }
+
+    %% Utility Class (Static Methods)
+    class MT5Utils {
+        <<utility>>
+        +convert_time(value, from_format, to_format)$ datetime|int|str
+        +get_time(time_type)$ datetime
+        +convert_price(symbol, value, from_unit, to_unit)$ float
+        +format_price(symbol, price, decimals)$ str
+        +round_price(symbol, price, round_to)$ float
+        +convert_volume(symbol, value, from_unit, to_unit)$ float
+        +round_volume(symbol, volume)$ float
+        +convert_type(value, type_name, direction)$ int|str
+        +to_dict(obj, obj_type)$ dict
+        +to_dataframe(data, data_type)$ DataFrame
+        +save(data, file_path, format)$ void
+        +load(file_path, format)$ any
+        +calculate(operation, *args, **kwargs)$ float
+    }
+
+    %% Enumerations
+    class ConnectionState {
+        <<enumeration>>
+        DISCONNECTED
+        CONNECTED
+        FAILED
+        INITIALIZING
+        RECONNECTING
+    }
+
+    class OrderType {
+        <<enumeration>>
+        BUY
+        SELL
+        BUY_LIMIT
+        SELL_LIMIT
+        BUY_STOP
+        SELL_STOP
+        BUY_STOP_LIMIT
+        SELL_STOP_LIMIT
+    }
+
+    class TimeFrame {
+        <<enumeration>>
+        M1
+        M5
+        M15
+        M30
+        H1
+        H4
+        D1
+        W1
+        MN1
+    }
+
+    %% Relationships
+    MT5Client "1" --o "1" ConnectionState : has
+    MT5Account "1" --> "1" MT5Client : uses
+    MT5Symbol "1" --> "1" MT5Client : uses
+    MT5Data "1" --> "1" MT5Client : uses
+    MT5Trade "1" --> "1" MT5Client : uses
+    MT5Trade "1" --> "1" MT5Symbol : uses
+    MT5Trade "1" --o "*" OrderType : creates
+    MT5History "1" --> "1" MT5Client : uses
+    MT5Risk "1" --> "1" MT5Client : uses
+    MT5Risk "1" --> "1" MT5Account : uses
+    MT5Risk "1" --> "1" MT5Symbol : uses
+    MT5Terminal "1" --> "1" MT5Client : uses
+    MT5Validator "1" --> "1" MT5Symbol : uses
+    MT5Data "1" --o "*" TimeFrame : uses
+    
+    %% Notes
+    note for MT5Client "Core connection manager\nHandles MT5 terminal\nconnection lifecycle"
+    note for MT5Trade "Unified trading interface\nHandles orders & positions\nwith simplified methods"
+    note for MT5Utils "Static utility class\nNo instance required\nHelper functions only"

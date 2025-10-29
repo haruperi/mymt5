@@ -1,0 +1,11 @@
+MetaTrader5
+pandas
+numpy
+python-dateutil
+pytest
+pytest-cov
+black
+flake8
+mypy
+
+git+https://github.com/haruperi/LoggerSystem.git@main

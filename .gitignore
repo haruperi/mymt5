@@ -188,7 +188,7 @@ data/history/
 data/reports/
 
 # Config files (keep examples, ignore actual configs)
-config/config.json
+config.ini
 .env
 
 .history/
