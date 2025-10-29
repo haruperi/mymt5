@@ -144,7 +144,9 @@ def example_2_symbol_information():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
@@ -195,7 +197,9 @@ def example_3_market_watch_management():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
@@ -242,7 +246,9 @@ def example_4_symbol_status_checks():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
@@ -288,7 +294,9 @@ def example_5_real_time_prices():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
@@ -338,7 +346,9 @@ def example_6_volume_validation():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
@@ -395,7 +405,9 @@ def example_7_market_depth():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
@@ -446,7 +458,9 @@ def example_8_export_symbols():
 
     client = MT5Client()
 
-    if not client.connect(**credentials):
+    # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
 
