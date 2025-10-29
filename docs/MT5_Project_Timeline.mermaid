@@ -1,0 +1,66 @@
+gantt
+    title MT5 Trading System Implementation Timeline
+    dateFormat YYYY-MM-DD
+    section Phase 1: Setup
+    Environment Setup           :p1a, 2024-01-01, 2d
+    Project Structure          :p1b, after p1a, 2d
+    Configuration Files        :p1c, after p1b, 1d
+    Version Control           :p1d, after p1c, 1d
+    
+    section Phase 2: Enums & Utils
+    Enumerations              :p2a, after p1d, 2d
+    Utility Functions         :p2b, after p2a, 3d
+    Testing Utils             :p2c, after p2b, 1d
+    
+    section Phase 3: Core Layer
+    MT5Client Structure       :p3a, after p2c, 2d
+    Connection Management     :p3b, after p3a, 2d
+    Authentication           :p3c, after p3b, 1d
+    Auto-Reconnection        :p3d, after p3c, 2d
+    Multi-Account Support    :p3e, after p3d, 2d
+    Event System             :p3f, after p3e, 1d
+    Client Testing           :p3g, after p3f, 2d
+    
+    section Phase 4: Info Layer
+    MT5Account Class         :p4a, after p3g, 3d
+    MT5Symbol Class          :p4b, after p4a, 3d
+    MT5Terminal Class        :p4c, after p4b, 2d
+    Info Layer Testing       :p4d, after p4c, 2d
+    
+    section Phase 5: Data Layer
+    MT5Data Class            :p5a, after p4d, 4d
+    MT5History Class         :p5b, after p5a, 3d
+    Data Layer Testing       :p5c, after p5b, 2d
+    
+    section Phase 6: Trading Layer
+    MT5Trade Class           :p6a, after p5c, 4d
+    MT5Risk Class            :p6b, after p6a, 3d
+    Trading Layer Testing    :p6c, after p6b, 2d
+    
+    section Phase 7: Utility Layer
+    MT5Validator Class       :p7a, after p6c, 3d
+    Validator Testing        :p7b, after p7a, 2d
+    
+    section Phase 8: Integration
+    Integration Testing      :p8a, after p7b, 3d
+    Performance Testing      :p8b, after p8a, 2d
+    Error Scenarios         :p8c, after p8b, 2d
+    Code Quality Review     :p8d, after p8c, 2d
+    
+    section Phase 9: Documentation
+    Code Documentation      :p9a, after p8d, 2d
+    User Documentation      :p9b, after p9a, 2d
+    Examples & Tutorials    :p9c, after p9b, 3d
+    API Reference          :p9d, after p9c, 1d
+    
+    section Phase 10: Packaging
+    Package Setup          :p10a, after p9d, 2d
+    Build & Test           :p10b, after p10a, 1d
+    Configuration Templates :p10c, after p10b, 1d
+    Distribution           :p10d, after p10c, 1d
+    
+    section Phase 11: Production
+    Security Review        :p11a, after p10d, 2d
+    Monitoring & Logging   :p11b, after p11a, 2d
+    Deployment Prep        :p11c, after p11b, 2d
+    Final Review          :p11d, after p11c, 1d
