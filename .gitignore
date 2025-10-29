@@ -191,6 +191,17 @@ data/reports/
 config.ini
 .env
 
+# Sensitive JSON files (logs, configs with credentials)
+*.json
+!*.json.example
+!package.json
+!package-lock.json
+!tsconfig.json
+!pyproject.toml.json
+
+# Claude AI settings (may contain local paths)
+.claude/
+
 .history/
 
 # Windows reserved device names
