@@ -63,3 +63,4 @@ Status & Diagnostics
 .. automethod:: mymt5.client.MT5Client.get_error
 .. automethod:: mymt5.client.MT5Client.ping
 
+

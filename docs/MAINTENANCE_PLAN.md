@@ -37,3 +37,4 @@ Guidelines for ongoing maintenance of MyMT5 in production.
 - Consecutive reconnection failures
 - Heartbeat missing for N minutes
 - Equity drawdown beyond threshold
+

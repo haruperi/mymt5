@@ -19,3 +19,4 @@ myst-parser>=0.18.0
 ipython>=8.0.0
 jupyter>=1.0.0
 
+
