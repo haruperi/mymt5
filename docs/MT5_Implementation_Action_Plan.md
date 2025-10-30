@@ -504,73 +504,73 @@
 
 ### 5.2 MT5History Class (history.py)
 
-- [ ] Create class skeleton
-- [ ] Implement `__init__()`
+- [x] Create class skeleton
+- [x] Implement `__init__()`
 
 #### History Retrieval
 
-- [ ] Implement `get()`
-  - [ ] 'deals', 'orders', 'both'
-  - [ ] Support filters
-- [ ] Implement `_fetch_deals()` (private)
-- [ ] Implement `_fetch_orders()` (private)
-- [ ] Test history retrieval
+- [x] Implement `get()`
+  - [x] 'deals', 'orders', 'both'
+  - [x] Support filters
+- [x] Implement `_fetch_deals()` (private)
+- [x] Implement `_fetch_orders()` (private)
+- [x] Test history retrieval
 
 #### Quick Access
 
-- [ ] Implement `get_today()`
-- [ ] Implement `get_period()`
-  - [ ] 'day', 'week', 'month', 'year'
-- [ ] Test quick access methods
+- [x] Implement `get_today()`
+- [x] Implement `get_period()`
+  - [x] 'day', 'week', 'month', 'year'
+- [x] Test quick access methods
 
 #### Performance Metrics
 
-- [ ] Implement `calculate()`
-  - [ ] 'win_rate'
-  - [ ] 'profit_factor'
-  - [ ] 'avg_win', 'avg_loss'
-  - [ ] 'largest_win', 'largest_loss'
-  - [ ] 'sharpe_ratio'
-  - [ ] 'max_drawdown'
-  - [ ] 'total_trades', 'total_profit'
-  - [ ] 'total_commission', 'total_swap'
-- [ ] Implement `_calculate_win_rate()` (private)
-- [ ] Implement `_calculate_profit_factor()` (private)
-- [ ] Implement `_calculate_sharpe_ratio()` (private)
-- [ ] Implement `_calculate_max_drawdown()` (private)
-- [ ] Test all calculations
+- [x] Implement `calculate()`
+  - [x] 'win_rate'
+  - [x] 'profit_factor'
+  - [x] 'avg_win', 'avg_loss'
+  - [x] 'largest_win', 'largest_loss'
+  - [x] 'sharpe_ratio'
+  - [x] 'max_drawdown'
+  - [x] 'total_trades', 'total_profit'
+  - [x] 'total_commission', 'total_swap'
+- [x] Implement `_calculate_win_rate()` (private)
+- [x] Implement `_calculate_profit_factor()` (private)
+- [x] Implement `_calculate_sharpe_ratio()` (private)
+- [x] Implement `_calculate_max_drawdown()` (private)
+- [x] Test all calculations
 
 #### Trade Analysis
 
-- [ ] Implement `analyze()`
-  - [ ] 'by_symbol'
-  - [ ] 'by_hour', 'by_day', 'by_weekday', 'by_month'
-  - [ ] 'winning_trades', 'losing_trades'
-  - [ ] 'statistics'
-- [ ] Implement `_analyze_by_symbol()` (private)
-- [ ] Implement `_analyze_by_time()` (private)
-- [ ] Test analysis methods
+- [x] Implement `analyze()`
+  - [x] 'by_symbol'
+  - [x] 'by_hour', 'by_day', 'by_weekday', 'by_month'
+  - [x] 'winning_trades', 'losing_trades'
+  - [x] 'statistics'
+- [x] Implement `_analyze_by_symbol()` (private)
+- [x] Implement `_analyze_by_time()` (private)
+- [x] Test analysis methods
 
 #### Reports
 
-- [ ] Implement `generate_report()`
-  - [ ] 'performance', 'trade_log', 'summary', 'detailed'
-  - [ ] Support dict, dataframe, html, pdf formats
-- [ ] Test report generation
+- [x] Implement `generate_report()`
+  - [x] 'performance', 'trade_log', 'summary', 'detailed'
+  - [x] Support dict, dataframe, html, text formats
+- [x] Test report generation
 
 #### Export & Summary
 
-- [ ] Implement `export()`
-- [ ] Implement `get_summary()`
-- [ ] Implement `print_report()`
-- [ ] Test export and summary
+- [x] Implement `export()`
+- [x] Implement `get_summary()`
+- [x] Implement `print_report()`
+- [x] Test export and summary
 
 #### Testing & Documentation
 
-- [ ] Write unit tests
-- [ ] Write integration tests
-- [ ] Document all methods
-- [ ] Create usage examples
+- [x] Write unit tests
+- [x] Write integration tests
+- [x] Document all methods
+- [x] Create usage examples
 
 ---
 
