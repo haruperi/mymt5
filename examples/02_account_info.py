@@ -35,11 +35,12 @@ def example_01_basic_account_info():
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    login = int(config['MT5']['login'])
-    password = config['MT5']['password']
-    server = config['MT5']['server']
+    login = int(config['DEMO']['login'])
+    password = config['DEMO']['password']
+    server = config['DEMO']['server']
+    path = config['DEMO']['path']
 
-    if not client.connect(login, password, server):
+    if not client.connect(login, password, server, path):
         print("Failed to connect to MT5")
         return
 
@@ -82,9 +83,10 @@ def example_02_account_status():
     config.read('config.ini')
 
     if not client.connect(
-        int(config['MT5']['login']),
-        config['MT5']['password'],
-        config['MT5']['server']
+        int(config['DEMO']['login']),
+        config['DEMO']['password'],
+        config['DEMO']['server'],
+        config['DEMO']['path']
     ):
         print("Failed to connect to MT5")
         return
@@ -120,9 +122,10 @@ def example_03_account_metrics():
     config.read('config.ini')
 
     if not client.connect(
-        int(config['MT5']['login']),
-        config['MT5']['password'],
-        config['MT5']['server']
+        int(config['DEMO']['login']),
+        config['DEMO']['password'],
+        config['DEMO']['server'],
+        config['DEMO']['path']
     ):
         print("Failed to connect to MT5")
         return
@@ -190,9 +193,10 @@ def example_04_account_summary():
     config.read('config.ini')
 
     if not client.connect(
-        int(config['MT5']['login']),
-        config['MT5']['password'],
-        config['MT5']['server']
+        int(config['DEMO']['login']),
+        config['DEMO']['password'],
+        config['DEMO']['server'],
+        config['DEMO']['path']
     ):
         print("Failed to connect to MT5")
         return
@@ -242,9 +246,10 @@ def example_05_export_data():
     config.read('config.ini')
 
     if not client.connect(
-        int(config['MT5']['login']),
-        config['MT5']['password'],
-        config['MT5']['server']
+        int(config['DEMO']['login']),
+        config['DEMO']['password'],
+        config['DEMO']['server'],
+        config['DEMO']['path']
     ):
         print("Failed to connect to MT5")
         return
@@ -289,9 +294,10 @@ def example_06_complete_workflow():
     config.read('config.ini')
 
     if not client.connect(
-        int(config['MT5']['login']),
-        config['MT5']['password'],
-        config['MT5']['server']
+        int(config['DEMO']['login']),
+        config['DEMO']['password'],
+        config['DEMO']['server'],
+        config['DEMO']['path']
     ):
         print("Failed to connect to MT5")
         return
@@ -363,7 +369,7 @@ def main():
         example_03_account_metrics()
         example_04_account_summary()
         example_05_export_data()
-        example_06_complete_workflow()
+        # example_06_complete_workflow()
 
         print("\n" + "=" * 70)
         print("ALL EXAMPLES COMPLETED SUCCESSFULLY!")

@@ -49,6 +49,48 @@ class MT5Data:
 
         logger.info("MT5Data initialized")
 
+    # ---------------------------------------------------------------------
+    # Internal helpers for column/time handling (case/index agnostic)
+    # ---------------------------------------------------------------------
+
+    def _find_column(self, df: pd.DataFrame, target: str) -> Optional[str]:
+        """Return actual column name in df matching target (case-insensitive)."""
+        target_lower = target.lower()
+        for col in df.columns:
+            if str(col).lower() == target_lower:
+                return col
+        return None
+
+    def _find_columns(self, df: pd.DataFrame, targets: List[str]) -> Dict[str, str]:
+        """Map desired names (lowercase) to actual df column names if present."""
+        mapping: Dict[str, str] = {}
+        for t in targets:
+            actual = self._find_column(df, t)
+            if actual is not None:
+                mapping[t.lower()] = actual
+        return mapping
+
+    def _get_time_series(self, df: pd.DataFrame) -> Optional[pd.Series]:
+        """Get a datetime series from 'time'/'datetime' column or DatetimeIndex."""
+        # Column 'time' or 'datetime'
+        for name in ['time', 'datetime']:
+            col = self._find_column(df, name)
+            if col is not None:
+                series = df[col]
+                if not pd.api.types.is_datetime64_any_dtype(series):
+                    try:
+                        series = pd.to_datetime(series)
+                    except Exception:
+                        return None
+                series.name = 'time'
+                return series
+        # Index
+        if isinstance(df.index, pd.DatetimeIndex):
+            series = pd.Series(df.index, index=df.index)
+            series.name = 'time'
+            return series
+        return None
+
     def get_bars(
         self,
         symbol: str,
@@ -117,7 +159,14 @@ class MT5Data:
             # Convert to DataFrame or dict
             if as_dataframe:
                 df = pd.DataFrame(rates)
+                # Convert epoch seconds to pandas datetime and rename to 'datetime'
                 df['time'] = pd.to_datetime(df['time'], unit='s')
+                df = df.rename(columns={'time': 'datetime', 'tick_volume': 'volume'})
+                df = df.drop(columns=['real_volume'])
+                # Set datetime as index
+                df = df.set_index('datetime')
+                # Capitalize column names
+                df.columns = [str(col).capitalize() for col in df.columns]
                 return df
             else:
                 return [dict(zip(rates.dtype.names, row)) for row in rates]
@@ -189,9 +238,24 @@ class MT5Data:
             # Convert to DataFrame or dict
             if as_dataframe:
                 df = pd.DataFrame(ticks)
-                df['time'] = pd.to_datetime(df['time'], unit='s')
+                # Normalize datetime index from time_msc if present, else from time
                 if 'time_msc' in df.columns:
                     df['time_msc'] = pd.to_datetime(df['time_msc'], unit='ms')
+                    df = df.rename(columns={'time_msc': 'datetime'})
+                else:
+                    df['time'] = pd.to_datetime(df['time'], unit='s')
+                    df = df.rename(columns={'time': 'datetime'})
+
+                # Keep only desired columns
+                keep_cols = [c for c in ['bid', 'ask', 'flags'] if c in df.columns]
+                df = df[['datetime'] + keep_cols]
+
+                # Set datetime as index
+                df = df.set_index('datetime')
+
+                # Capitalize columns
+                df.columns = [str(col).capitalize() for col in df.columns]
+
                 return df
             else:
                 return [dict(zip(ticks.dtype.names, row)) for row in ticks]
@@ -323,11 +387,11 @@ class MT5Data:
                         callback = self._stream_callbacks[stream_id]
                         if callback:
                             tick_dict = {
-                                'time': datetime.fromtimestamp(tick.time),
-                                'bid': tick.bid,
-                                'ask': tick.ask,
-                                'last': tick.last,
-                                'volume': tick.volume
+                                'Datetime': datetime.fromtimestamp(tick.time),
+                                'Bid': tick.bid,
+                                'Ask': tick.ask,
+                                'Last': tick.last,
+                                'Volume': tick.volume
                             }
                             callback(tick_dict)
 
@@ -363,12 +427,12 @@ class MT5Data:
                             callback = self._stream_callbacks[stream_id]
                             if callback:
                                 bar_dict = {
-                                    'time': datetime.fromtimestamp(bar['time']),
-                                    'open': bar['open'],
-                                    'high': bar['high'],
-                                    'low': bar['low'],
-                                    'close': bar['close'],
-                                    'volume': bar['tick_volume']
+                                    'Datetime': datetime.fromtimestamp(bar['time']),
+                                    'Open': bar['open'],
+                                    'High': bar['high'],
+                                    'Low': bar['low'],
+                                    'Close': bar['close'],
+                                    'Volume': bar['tick_volume']
                                 }
                                 callback(bar_dict)
 
@@ -423,17 +487,18 @@ class MT5Data:
         """Normalize price data."""
         df = data.copy()
 
-        price_cols = ['open', 'high', 'low', 'close']
-        available_cols = [col for col in price_cols if col in df.columns]
+        desired = ['open', 'high', 'low', 'close']
+        mapping = self._find_columns(df, desired)
+        actual_cols = list(mapping.values())
 
         if method == 'minmax':
-            for col in available_cols:
-                min_val = df[col].min()
-                max_val = df[col].max()
-                df[f'{col}_normalized'] = (df[col] - min_val) / (max_val - min_val)
+            for actual in actual_cols:
+                min_val = df[actual].min()
+                max_val = df[actual].max()
+                df[f'{actual}_normalized'] = (df[actual] - min_val) / (max_val - min_val)
         elif method == 'zscore':
-            for col in available_cols:
-                df[f'{col}_normalized'] = (df[col] - df[col].mean()) / df[col].std()
+            for actual in actual_cols:
+                df[f'{actual}_normalized'] = (df[actual] - df[actual].mean()) / df[actual].std()
 
         logger.info(f"Normalized data using {method} method")
         return df
@@ -442,47 +507,58 @@ class MT5Data:
         """Clean market data by removing duplicates and invalid values."""
         df = data.copy()
 
-        # Remove duplicates
-        if remove_duplicates and 'time' in df.columns:
-            df = df.drop_duplicates(subset=['time'], keep='last')
+        # Remove duplicates based on time if available
+        if remove_duplicates:
+            time_series = self._get_time_series(df)
+            if time_series is not None:
+                time_name = time_series.name or 'Datetime'
+                df[time_name] = time_series.values
+                df = df.drop_duplicates(subset=[time_name], keep='last')
 
         # Remove rows with NaN in critical columns
-        critical_cols = ['open', 'high', 'low', 'close']
-        available_cols = [col for col in critical_cols if col in df.columns]
-        df = df.dropna(subset=available_cols)
-
-        # Remove rows with invalid prices (zero or negative)
-        for col in available_cols:
-            df = df[df[col] > 0]
+        desired = ['Open', 'High', 'Low', 'Close']
+        mapping = self._find_columns(df, desired)
+        available_cols = list(mapping.values())
+        if available_cols:
+            df = df.dropna(subset=available_cols)
+            # Remove rows with invalid prices (zero or negative)
+            for col in available_cols:
+                df = df[df[col] > 0]
 
         logger.info(f"Cleaned data: {len(data)} -> {len(df)} rows")
         return df
 
     def _resample_data(self, data: pd.DataFrame, timeframe: str = '1H') -> pd.DataFrame:
         """Resample OHLCV data to different timeframe."""
-        if 'time' not in data.columns:
-            logger.error("Data must have 'time' column for resampling")
-            return data
-
         df = data.copy()
-        df = df.set_index('time')
+
+        # Ensure DatetimeIndex for resampling
+        time_series = self._get_time_series(df)
+        if time_series is None:
+            logger.error("Data must have a datetime index or 'time'/'datetime' column for resampling")
+            return data
+        df = df.copy()
+        df.index = pd.DatetimeIndex(time_series.values, name='Datetime')
+
+        # Map columns irrespective of case
+        mapping = self._find_columns(df, ['Open', 'High', 'Low', 'Close', 'Volume', 'Spread'])
 
         # Resample OHLCV
         resampled = pd.DataFrame()
 
-        if 'open' in df.columns:
-            resampled['open'] = df['open'].resample(timeframe).first()
-        if 'high' in df.columns:
-            resampled['high'] = df['high'].resample(timeframe).max()
-        if 'low' in df.columns:
-            resampled['low'] = df['low'].resample(timeframe).min()
-        if 'close' in df.columns:
-            resampled['close'] = df['close'].resample(timeframe).last()
-        if 'volume' in df.columns or 'tick_volume' in df.columns:
-            vol_col = 'volume' if 'volume' in df.columns else 'tick_volume'
-            resampled['volume'] = df[vol_col].resample(timeframe).sum()
+        if 'Open' in mapping:
+            resampled['Open'] = df[mapping['Open']].resample(timeframe).first()
+        if 'High' in mapping:
+            resampled['High'] = df[mapping['High']].resample(timeframe).max()
+        if 'Low' in mapping:
+            resampled['Low'] = df[mapping['Low']].resample(timeframe).min()
+        if 'Close' in mapping:
+            resampled['Close'] = df[mapping['Close']].resample(timeframe).last()
+        vol_col = mapping.get('Volume') 
+        if vol_col:
+            resampled['Volume'] = df[vol_col].resample(timeframe).sum()
 
-        resampled = resampled.dropna()
+        resampled = resampled.dropna(how='all')
         resampled = resampled.reset_index()
 
         logger.info(f"Resampled data to {timeframe}")
@@ -506,24 +582,26 @@ class MT5Data:
 
     def _detect_gaps(self, data: pd.DataFrame, timeframe_minutes: int = 60) -> pd.DataFrame:
         """Detect gaps in time series data."""
-        if 'time' not in data.columns:
-            logger.error("Data must have 'time' column for gap detection")
+        df = data.copy()
+
+        time_series = self._get_time_series(df)
+        if time_series is None:
+            logger.error("Data must have a datetime index or time column for gap detection")
             return pd.DataFrame()
 
-        df = data.copy()
-        df = df.sort_values('time')
+        work = pd.DataFrame({'Datetime': pd.to_datetime(time_series.values)})
+        work = work.sort_values('Datetime')
+        work['time_diff'] = work['Datetime'].diff()
 
-        # Calculate time differences
-        df['time_diff'] = df['time'].diff()
-
-        # Expected difference
         expected_diff = timedelta(minutes=timeframe_minutes)
-
-        # Find gaps (where difference is greater than expected)
-        gaps = df[df['time_diff'] > expected_diff * 1.5]
+        gaps = work[work['time_diff'] > expected_diff * 1.5]
 
         logger.info(f"Detected {len(gaps)} gaps in data")
-        return gaps[['time', 'time_diff']]
+        # Ensure explicit columns are returned
+        try:
+            return gaps[['Datetime', 'time_diff']]
+        except Exception:
+            return gaps.reset_index(drop=True)
 
     def cache(self, key: str, data: Any, ttl: Optional[int] = None):
         """
@@ -705,23 +783,24 @@ class MT5Data:
         }
 
         # Date range
-        if 'time' in data.columns:
+        time_series = self._get_time_series(data)
+        if time_series is not None and len(time_series) > 0:
             summary['date_range'] = {
-                'start': data['time'].min(),
-                'end': data['time'].max(),
-                'duration': data['time'].max() - data['time'].min()
+                'start': time_series.min(),
+                'end': time_series.max(),
+                'duration': time_series.max() - time_series.min()
             }
 
         # Price statistics
-        price_cols = ['open', 'high', 'low', 'close']
-        for col in price_cols:
-            if col in data.columns:
-                summary['price_stats'][col] = {
-                    'min': float(data[col].min()),
-                    'max': float(data[col].max()),
-                    'mean': float(data[col].mean()),
-                    'std': float(data[col].std())
-                }
+        price_cols = self._find_columns(data, ['open', 'high', 'low', 'close'])
+        for key, actual in price_cols.items():
+            col = actual
+            summary['price_stats'][col] = {
+                'min': float(data[col].min()),
+                'max': float(data[col].max()),
+                'mean': float(data[col].mean()),
+                'std': float(data[col].std())
+            }
 
         return summary
 
@@ -737,8 +816,9 @@ class MT5Data:
         """
         stats = {}
 
-        if 'close' in data.columns:
-            prices = data['close']
+        mapping = self._find_columns(data, ['close'])
+        if 'close' in mapping:
+            prices = data[mapping['close']]
 
             # Returns
             returns = prices.pct_change().dropna()

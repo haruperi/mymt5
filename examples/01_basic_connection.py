@@ -16,24 +16,26 @@ sys.path.insert(0, str(project_root))
 from mylogger import logger
 from mymt5.client import MT5Client
 import configparser
+from time import sleep
 
 
 logger.info("Loading client_example module")
 
 
-def get_credentials_from_config(config_file='config.ini', section='MT5'):
+def get_credentials_from_config(config_file='config.ini', section=''):
     """
     Load MT5 credentials from config file.
     
     Args:
         config_file: Path to config file (default: 'config.ini')
-        section: Section name in config file (default: 'MT5')
+        section: Section name in config file (default: '')
     
     Returns:
         dict: Dictionary with 'login', 'password', 'server', and optionally 'path'
         None: If config file or section not found
     """
-    config = configparser.ConfigParser()
+    # Disable interpolation to allow literal '%' in passwords and other fields
+    config = configparser.ConfigParser(interpolation=None)
     
     # Resolve config file path - try current dir first, then project root
     config_path = Path(config_file)
@@ -58,13 +60,9 @@ def get_credentials_from_config(config_file='config.ini', section='MT5'):
     credentials = {
         'login': int(section_config.get('login')),
         'password': section_config.get('password'),
-        'server': section_config.get('server')
-        
+        'server': section_config.get('server'),
+        'path': section_config.get('path')
     }
-    
-    # Optional path
-    if 'path' in section_config:
-        credentials['path'] = section_config.get('path')
     
     return credentials
 
@@ -76,7 +74,7 @@ def example_basic_connection():
     print("="*60)
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         return
@@ -88,7 +86,8 @@ def example_basic_connection():
     success = client.initialize(
         login=creds['login'],
         password=creds['password'],
-        server=creds['server']
+        server=creds['server'],
+        path=creds['path']
     )
 
     if success:
@@ -113,22 +112,18 @@ def example_connection_from_config():
     print("="*60)
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         return
 
-    # Create client with optional path from config
-    client_kwargs = {'timeout': 30000}
-    if 'path' in creds:
-        client_kwargs['path'] = creds['path']
-    
-    client = MT5Client(**client_kwargs)
+    client = MT5Client()
 
     success = client.initialize(
         login=creds['login'],
         password=creds['password'],
-        server=creds['server']
+        server=creds['server'],
+        path=creds['path']
     )
 
     if success:
@@ -149,14 +144,14 @@ def example_context_manager():
     print("="*60)
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         return
 
     # Client automatically shuts down when exiting context
     with MT5Client() as client:
-        if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
+        if client.initialize(login=creds['login'], password=creds['password'], server=creds['server'], path=creds['path']):
             print("✓ Connected within context manager")
             print(f"  Is connected: {client.is_connected()}")
             print(f"  Ping successful: {client.ping()}")
@@ -185,14 +180,14 @@ def example_auto_reconnection():
     print(f"  Retry delay: {client.retry_delay}s")
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         client.shutdown()
         return
 
     # Connect
-    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
+    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server'], path=creds['path']):
         print("✓ Connected with auto-reconnect enabled")
 
         # If connection drops, client will auto-reconnect
@@ -230,14 +225,14 @@ def example_event_callbacks():
     print("✓ Event callbacks registered")
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         client.shutdown()
         return
 
     # Events will be triggered automatically
-    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
+    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server'], path=creds['path']):
         print("✓ Connection established (connect event should fire)")
 
     client.disconnect()
@@ -255,7 +250,7 @@ def example_multi_account():
     client = MT5Client()
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         return
@@ -265,7 +260,8 @@ def example_multi_account():
         'demo_account',
         creds['login'],
         creds['password'],
-        creds['server']
+        creds['server'],
+        creds['path']
     )
 
     print("✓ Saved demo account")
@@ -331,13 +327,13 @@ def example_status_diagnostics():
     client = MT5Client()
 
     # Load credentials from config
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         client.shutdown()
         return
 
-    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server']):
+    if client.initialize(login=creds['login'], password=creds['password'], server=creds['server'], path=creds['path']):
         # Get comprehensive status
         status = client.get_status()
 
@@ -375,7 +371,8 @@ def example_error_handling():
     success = client.initialize(
         login=99999,
         password="invalid",
-        server="InvalidServer"
+        server="InvalidServer",
+        path=""
     )
 
     if not success:
@@ -419,7 +416,7 @@ def example_complete_workflow():
     client.on('error', on_error)
 
     # 4. Load and save account credentials
-    creds = get_credentials_from_config()
+    creds = get_credentials_from_config(section='DEMO')
     if not creds:
         print("✗ Failed to load credentials from config.ini")
         client.shutdown()
@@ -429,7 +426,8 @@ def example_complete_workflow():
         'my_demo',
         creds['login'],
         creds['password'],
-        creds['server']
+        creds['server'],
+        creds['path']
     )
 
     # 5. Connect using saved account
@@ -470,15 +468,16 @@ def main():
 
     try:
         example_basic_connection()
+        sleep(10)
         example_connection_from_config()
         example_context_manager()
         example_auto_reconnection()
         example_event_callbacks()
-        example_multi_account()
+        #example_multi_account()
         example_configuration()
         example_status_diagnostics()
-        example_error_handling()
-        example_complete_workflow()
+        #example_error_handling()
+        #example_complete_workflow()
 
         print("\n" + "="*60)
         print("All examples completed!")

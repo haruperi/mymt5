@@ -1,5 +1,111 @@
+# MyMT5 Configuration File Example
+# Copy this file to config.ini and fill in your details
+# IMPORTANT: Add config.ini to .gitignore!
+
 [MT5]
-login=YOUR_LOGIN_HERE
-password=YOUR_PASSWORD_HERE
-server=YOUR_SERVER_HERE
-path=C:\\Program Files\\MetaTrader 5\\terminal64.exe
+# MT5 Account Credentials
+login = YOUR_ACCOUNT_NUMBER
+password = YOUR_PASSWORD
+server = YOUR_BROKER_SERVER
+
+# MT5 Terminal Path (adjust for your system)
+# Windows:
+path = C:\Program Files\MetaTrader 5\terminal64.exe
+# Linux (Wine):
+# path = /home/user/.wine/drive_c/Program Files/MetaTrader 5/terminal64.exe
+# macOS (Wine):
+# path = /Users/username/.wine/drive_c/Program Files/MetaTrader 5/terminal64.exe
+
+# Connection Settings
+timeout = 60000
+portable = False
+
+# Auto-Reconnection
+auto_reconnect = True
+retry_attempts = 5
+retry_delay = 3
+
+[RISK]
+# Risk Management Limits
+max_risk_per_trade = 2.0
+max_daily_loss = 500.0
+max_positions = 5
+max_symbol_positions = 2
+max_total_exposure = 20.0
+
+# Position Sizing Method (percent, amount, ratio)
+sizing_method = percent
+default_risk_percent = 1.0
+
+[TRADING]
+# Trading Settings
+magic_number = 12345
+default_deviation = 20
+default_comment = MyMT5 Trade
+
+# Default Stop Loss and Take Profit (in pips)
+default_stop_loss_pips = 50
+default_take_profit_pips = 100
+
+# Trading Hours (UTC, 24-hour format)
+# Leave empty for 24/7 trading
+trading_start_hour = 0
+trading_end_hour = 24
+
+# Trading Days (0=Monday, 6=Sunday)
+# Example: 0,1,2,3,4 for Monday-Friday only
+# Leave empty for all days
+trading_days = 0,1,2,3,4
+
+[DATA]
+# Data Management
+cache_enabled = True
+cache_duration = 300
+
+# Data Storage
+data_directory = data
+save_historical_data = True
+historical_data_format = csv
+
+[LOGGING]
+# Logging Configuration
+level = INFO
+format = %%(asctime)s - %%(name)s - %%(levelname)s - %%(message)s
+
+# Log Files
+log_directory = logs
+log_file = app.log
+error_log_file = errors.log
+trade_log_file = trades.log
+
+# Log Rotation
+max_bytes = 10485760
+backup_count = 5
+
+[NOTIFICATIONS]
+# Notification Settings
+enabled = False
+
+# Email Notifications
+email_enabled = False
+smtp_server = smtp.gmail.com
+smtp_port = 587
+smtp_username = your_email@gmail.com
+smtp_password = your_app_password
+notification_email = your_email@gmail.com
+
+# Telegram Notifications
+telegram_enabled = False
+telegram_bot_token = YOUR_BOT_TOKEN
+telegram_chat_id = YOUR_CHAT_ID
+
+[STRATEGY]
+# Strategy Settings
+strategy_name = MyStrategy
+symbols = EURUSD,GBPUSD,USDJPY
+timeframe = H1
+
+# Strategy Parameters (customize as needed)
+param1 = 20
+param2 = 50
+param3 = 0.5

@@ -13,6 +13,19 @@ This example demonstrates comprehensive usage of the MT5History class for:
 from mymt5.client import MT5Client
 from mymt5.history import MT5History
 from datetime import datetime, timedelta
+import configparser
+
+
+def _get_demo_credentials():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    section = 'DEMO'
+    return (
+        int(config[section]['login']),
+        config[section]['password'],
+        config[section]['server'],
+        config[section]['path']
+    )
 import pandas as pd
 
 
@@ -24,8 +37,8 @@ def example1_basic_history():
 
     # Initialize client and history
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -49,8 +62,8 @@ def example2_date_range_history():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -77,8 +90,8 @@ def example3_filtered_history():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -105,8 +118,8 @@ def example4_quick_access():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -141,8 +154,8 @@ def example5_performance_metrics():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -177,8 +190,8 @@ def example6_trade_analysis():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -219,8 +232,8 @@ def example7_winning_losing_trades():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -268,8 +281,8 @@ def example8_report_generation():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -314,8 +327,8 @@ def example9_export_data():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 
@@ -341,8 +354,8 @@ def example10_comprehensive_analysis():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     history = MT5History(client=client)
 

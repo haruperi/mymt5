@@ -22,7 +22,7 @@ import configparser
 logger.info("Loading symbol management examples")
 
 
-def get_credentials_from_config(config_file='config.ini', section='MT5'):
+def get_credentials_from_config(config_file='config.ini', section=''):
     """
     Load MT5 credentials from config file.
 
@@ -76,7 +76,7 @@ def example_1_symbol_discovery():
     print("="*60)
 
     # Load credentials from config file
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -88,7 +88,8 @@ def example_1_symbol_discovery():
     success = client.connect(
         login=credentials['login'],
         password=credentials['password'],
-        server=credentials['server']
+        server=credentials['server'],
+        path=credentials['path']
     )
 
     if not success:
@@ -137,7 +138,7 @@ def example_2_symbol_information():
     print("Example 2: Symbol Information")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -145,7 +146,7 @@ def example_2_symbol_information():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
@@ -190,7 +191,7 @@ def example_3_market_watch_management():
     print("Example 3: Market Watch Management")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -198,7 +199,7 @@ def example_3_market_watch_management():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
@@ -239,7 +240,7 @@ def example_4_symbol_status_checks():
     print("Example 4: Symbol Status Checks")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -247,7 +248,7 @@ def example_4_symbol_status_checks():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
@@ -287,7 +288,7 @@ def example_5_real_time_prices():
     print("Example 5: Real-Time Prices")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -295,7 +296,7 @@ def example_5_real_time_prices():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
@@ -339,7 +340,7 @@ def example_6_volume_validation():
     print("Example 6: Volume Validation")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -347,7 +348,7 @@ def example_6_volume_validation():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
@@ -398,7 +399,7 @@ def example_7_market_depth():
     print("Example 7: Market Depth (DOM)")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -406,7 +407,7 @@ def example_7_market_depth():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return
@@ -451,7 +452,7 @@ def example_8_export_symbols():
     print("Example 8: Export Symbol List")
     print("="*60)
 
-    credentials = get_credentials_from_config()
+    credentials = get_credentials_from_config(section='DEMO')
     if not credentials:
         print("ERROR: Could not load credentials from config.ini")
         return
@@ -459,7 +460,7 @@ def example_8_export_symbols():
     client = MT5Client()
 
     # Extract only connection parameters (exclude 'path' which is for initialize, not connect)
-    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server']}
+    connect_params = {k: v for k, v in credentials.items() if k in ['login', 'password', 'server', 'path']}
     if not client.connect(**connect_params):
         print("Failed to connect to MT5")
         return

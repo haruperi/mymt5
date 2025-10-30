@@ -3,7 +3,7 @@
 from mylogger import logger
 from typing import Optional, Dict, Any, Union
 import MetaTrader5 as mt5
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class MT5Account:
@@ -225,7 +225,15 @@ class MT5Account:
         margin = account_info['margin']
 
         if margin == 0:
-            logger.warning("Margin is 0, returning 0 for margin level")
+            # If there are no open positions, margin level is effectively infinite
+            try:
+                positions = mt5.positions_total()
+            except Exception:
+                positions = 0
+            if positions == 0:
+                logger.info("No open positions and margin is 0; returning infinite margin level")
+                return float('inf')
+            logger.warning("Margin is 0 with open positions; returning 0 for margin level")
             return 0.0
 
         margin_level = (account_info['equity'] / margin) * 100
@@ -272,8 +280,8 @@ class MT5Account:
         margin_free = account_info['margin_free']
         profit = account_info['profit']
 
-        # Calculate metrics
-        margin_level = self._calculate_margin_level() if margin > 0 else 0
+        # Calculate metrics (handles 0-margin internally, may return inf)
+        margin_level = self._calculate_margin_level()
         drawdown_percent = self._calculate_drawdown(type='percent')
 
         # Determine health status
@@ -316,20 +324,87 @@ class MT5Account:
         """
         logger.info(f"Calculating margin required for {symbol}, volume={volume}")
 
-        # Get symbol info to calculate margin
+        # Ensure symbol is selected/visible in Market Watch
+        try:
+            if not mt5.symbol_select(symbol, True):
+                logger.warning(f"Symbol {symbol} was not selected; attempting to select failed")
+        except Exception as e:
+            logger.warning(f"Exception while selecting symbol {symbol}: {e}")
+
+        # Get symbol info for pricing
         symbol_info = mt5.symbol_info(symbol)
         if symbol_info is None:
-            logger.error(f"Failed to get symbol info for {symbol}")
-            raise RuntimeError(f"Failed to get symbol info for {symbol}")
+            code, desc = mt5.last_error()
+            logger.error(f"Failed to get symbol info for {symbol}: {code} - {desc}")
+            raise RuntimeError(f"Failed to get symbol info for {symbol}: {code} - {desc}")
+
+        # Determine a robust price to use: ask -> bid -> tick -> last
+        price = None
+        try:
+            if getattr(symbol_info, 'ask', 0) and symbol_info.ask > 0:
+                price = symbol_info.ask
+            elif getattr(symbol_info, 'bid', 0) and symbol_info.bid > 0:
+                price = symbol_info.bid
+            else:
+                tick = mt5.symbol_info_tick(symbol)
+                if tick is not None:
+                    if getattr(tick, 'ask', 0) and tick.ask > 0:
+                        price = tick.ask
+                    elif getattr(tick, 'bid', 0) and tick.bid > 0:
+                        price = tick.bid
+                    elif getattr(tick, 'last', 0) and tick.last > 0:
+                        price = tick.last
+            if price is None and getattr(symbol_info, 'last', 0) and symbol_info.last > 0:
+                price = symbol_info.last
+        except Exception as e:
+            logger.warning(f"Exception while selecting price for {symbol}: {e}")
+
+        if price is None or price <= 0:
+            # Fallback 1: try recent ticks within last day
+            try:
+                since = datetime.now() - timedelta(days=1)
+                ticks = mt5.copy_ticks_from(symbol, since, 1000, mt5.COPY_TICKS_INFO)
+                if ticks is not None and len(ticks) > 0:
+                    # Find the last tick with usable price
+                    for t in reversed(ticks):
+                        ask_v = t['ask'] if 'ask' in t.dtype.names else 0
+                        bid_v = t['bid'] if 'bid' in t.dtype.names else 0
+                        last_v = t['last'] if 'last' in t.dtype.names else 0
+                        if ask_v and ask_v > 0:
+                            price = float(ask_v)
+                            break
+                        if bid_v and bid_v > 0:
+                            price = float(bid_v)
+                            break
+                        if last_v and last_v > 0:
+                            price = float(last_v)
+                            break
+            except Exception as e:
+                logger.warning(f"Exception while fetching recent ticks for {symbol}: {e}")
+
+        if price is None or price <= 0:
+            # Fallback 2: try last M1 candle close
+            try:
+                rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, 1)
+                if rates is not None and len(rates) > 0 and 'close' in rates.dtype.names:
+                    close_v = rates[0]['close']
+                    if close_v and close_v > 0:
+                        price = float(close_v)
+            except Exception as e:
+                logger.warning(f"Exception while fetching M1 close for {symbol}: {e}")
+
+        if price is None or price <= 0:
+            code, desc = mt5.last_error()
+            logger.error(f"No valid price available for {symbol}; last_error={code} - {desc}")
+            raise RuntimeError(f"No valid price available for {symbol}")
 
         # Calculate margin using MT5 function
         action = mt5.ORDER_TYPE_BUY  # Use buy as default for calculation
-        price = symbol_info.ask
-
         margin = mt5.order_calc_margin(action, symbol, volume, price)
         if margin is None:
-            logger.error(f"Failed to calculate margin")
-            raise RuntimeError("Failed to calculate margin")
+            code, desc = mt5.last_error()
+            logger.error(f"Failed to calculate margin for {symbol} at price {price}: {code} - {desc}")
+            raise RuntimeError(f"Failed to calculate margin: {code} - {desc}")
 
         logger.info(f"Required margin: {margin}")
         return margin

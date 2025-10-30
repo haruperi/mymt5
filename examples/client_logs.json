@@ -1,12 +1,12 @@
 {
-    "timestamp": "2025-10-29T22:45:46.701845",
+    "timestamp": "2025-10-30T16:18:56.916252",
     "client_status": {
         "connection_state": "connected",
         "is_connected": true,
         "account_info": {
             "login": 61422123,
             "server": "Pepperstone-Demo",
-            "current_account": null
+            "current_account": ""
         },
         "auto_reconnect": {
             "enabled": false,
@@ -15,7 +15,7 @@
         },
         "terminal_info": {
             "community_account": true,
-            "community_connection": true,
+            "community_connection": false,
             "connected": true,
             "dlls_allowed": true,
             "trade_allowed": true,
@@ -27,9 +27,9 @@
             "build": 5370,
             "maxbars": 100000000,
             "codepage": 0,
-            "ping_last": 138474,
+            "ping_last": 140653,
             "community_balance": 0.0,
-            "retransmission": 0.9802723250299459,
+            "retransmission": 0.0,
             "company": "Pepperstone Group Limited",
             "name": "Pepperstone MetaTrader 5",
             "language": "English",
@@ -42,7 +42,7 @@
             "successful_connections": 1,
             "failed_connections": 0,
             "success_rate": 1.0,
-            "last_connection_time": "2025-10-29T22:45:46.699097",
+            "last_connection_time": "2025-10-30T16:18:56.912966",
             "error_count": 0,
             "last_error": null
         }
@@ -52,12 +52,12 @@
         "successful_connections": 1,
         "failed_connections": 0,
         "success_rate": 1.0,
-        "last_connection_time": "2025-10-29T22:45:46.699097",
+        "last_connection_time": "2025-10-30T16:18:56.912966",
         "error_count": 0,
         "last_error": null
     },
     "configuration": {
-        "path": null,
+        "path": "C:\\\\Program Files\\\\Pepperstone MetaTrader 5\\\\terminal64.exe",
         "timeout": 60000,
         "portable": false,
         "auto_reconnect_enabled": false,

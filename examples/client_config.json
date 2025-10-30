@@ -1,5 +1,5 @@
 {
-    "path": null,
+    "path": "",
     "timeout": 30000,
     "portable": false,
     "auto_reconnect_enabled": true,

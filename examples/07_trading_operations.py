@@ -14,6 +14,19 @@ from mymt5.client import MT5Client
 from mymt5.trade import MT5Trade
 from mymt5.enums import OrderType
 import time
+import configparser
+
+
+def _get_demo_credentials():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    section = 'DEMO'
+    return (
+        int(config[section]['login']),
+        config[section]['password'],
+        config[section]['server'],
+        config[section]['path']
+    )
 
 
 def example1_market_orders():
@@ -23,14 +36,14 @@ def example1_market_orders():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
     # Simple market buy
     print("\n1. Market Buy Order:")
-    result = trade.buy("EURUSD", 0.01, sl=1.0500, tp=1.1000)
+    result = trade.buy("EURUSD", 0.01, sl_pips=50, tp_pips=50)
     if result:
         print(f"✓ Order executed: Deal={result['deal']}, Order={result['order']}")
         print(f"  Price: {result['price']:.5f}")
@@ -39,7 +52,7 @@ def example1_market_orders():
 
     # Simple market sell
     print("\n2. Market Sell Order:")
-    result = trade.sell("EURUSD", 0.01, sl=1.1500, tp=1.1000)
+    result = trade.sell("EURUSD", 0.01, sl_pips=50, tp_pips=50)
     if result:
         print(f"✓ Order executed: Deal={result['deal']}, Order={result['order']}")
     else:
@@ -55,8 +68,8 @@ def example2_pending_orders():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -66,9 +79,9 @@ def example2_pending_orders():
         symbol="EURUSD",
         order_type=OrderType.BUY_LIMIT,
         volume=0.01,
-        price=1.0900,  # Below current price
-        sl=1.0850,
-        tp=1.0950
+        price=1.15520,  # Below current price
+        sl_pips=50,
+        tp_pips=50
     )
     if result:
         print(f"✓ Pending order placed: Order={result['order']}")
@@ -81,9 +94,9 @@ def example2_pending_orders():
         symbol="EURUSD",
         order_type=OrderType.SELL_STOP,
         volume=0.01,
-        price=1.0850,  # Below current price
-        sl=1.0900,
-        tp=1.0800
+        price=1.15520,  # Below current price
+        sl_pips=50,
+        tp_pips=50
     )
     if result:
         print(f"✓ Pending order placed: Order={result['order']}")
@@ -100,8 +113,8 @@ def example3_order_management():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -111,7 +124,8 @@ def example3_order_management():
     if orders is not None and len(orders) > 0:
         print(f"✓ Found {len(orders)} open orders:")
         for _, order in orders.head().iterrows():
-            print(f"  - Order {order['ticket']}: {order['symbol']} {order['type']} {order['volume']}")
+            vol = order['volume_current'] if 'volume_current' in orders.columns else order.get('volume', '')
+            print(f"  - Order {order['ticket']}: {order['symbol']} {order['type']} {vol}")
     else:
         print("  No open orders")
 
@@ -119,7 +133,7 @@ def example3_order_management():
     if orders is not None and len(orders) > 0:
         order_ticket = orders.iloc[0]['ticket']
         print(f"\n2. Modifying Order {order_ticket}:")
-        result = trade.modify_order(order_ticket, sl=1.0800, tp=1.1000)
+        result = trade.modify_order(order_ticket, sl=1.0800, tp=1.1600)
         if result:
             print(f"✓ Order modified successfully")
         else:
@@ -143,8 +157,8 @@ def example4_position_management():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -163,8 +177,9 @@ def example4_position_management():
     # Modify position (if exists)
     if positions is not None and len(positions) > 0:
         pos_symbol = positions.iloc[0]['symbol']
-        print(f"\n2. Modifying Position SL/TP for {pos_symbol}:")
-        result = trade.modify_position(pos_symbol, sl=1.0900, tp=1.1100)
+        pos_ticket = positions.iloc[0]['ticket']
+        print(f"\n2. Modifying Position SL/TP for {pos_ticket}:")
+        result = trade.modify_position(pos_symbol, sl=1.15520, tp=1.1600, ticket=pos_ticket)
         if result:
             print(f"✓ Position modified successfully")
         else:
@@ -190,8 +205,8 @@ def example5_position_analytics():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -247,8 +262,8 @@ def example6_reverse_position():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -287,8 +302,8 @@ def example7_batch_operations():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -320,8 +335,8 @@ def example8_validation():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -359,7 +374,7 @@ def example8_validation():
 
     # Check order status
     print("\n3. Checking Order Status:")
-    order_info = trade.check_order(12345)  # Example ticket
+    order_info = trade.check_order(193609685)  # Example ticket
     if order_info:
         print(f"✓ Order found: Status = {order_info['status']}")
     else:
@@ -375,8 +390,8 @@ def example9_trading_summary():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -421,8 +436,8 @@ def example10_complete_trading_workflow():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     trade = MT5Trade(client=client)
 
@@ -507,12 +522,12 @@ def main():
 
     try:
         # Run safer examples first
-        example1_market_orders()
-        example3_order_management()
-        example4_position_management()
-        example5_position_analytics()
-        example8_validation()
-        example9_trading_summary()
+        #example1_market_orders()
+        # example3_order_management()
+        # example4_position_management()
+        # example5_position_analytics()
+        # example8_validation()
+        # example9_trading_summary()
 
         # More advanced examples
         # example2_pending_orders()

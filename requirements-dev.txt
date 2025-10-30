@@ -1,0 +1,21 @@
+# Development and Testing Dependencies
+pytest>=7.0.0
+pytest-cov>=3.0.0
+pytest-asyncio>=0.18.0
+
+# Code Quality
+black>=22.0.0
+flake8>=4.0.0
+mypy>=0.950
+pylint>=2.13.0
+
+# Documentation
+sphinx>=5.0.0
+sphinx-rtd-theme>=1.0.0
+sphinx-autobuild>=2021.3.14
+myst-parser>=0.18.0
+
+# Utilities
+ipython>=8.0.0
+jupyter>=1.0.0
+

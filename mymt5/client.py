@@ -49,7 +49,6 @@ class MT5Client:
 
     def __init__(
         self,
-        path: Optional[str] = None,
         timeout: int = 60000,
         portable: bool = False
     ):
@@ -57,7 +56,6 @@ class MT5Client:
         Initialize the MT5Client instance.
 
         Args:
-            path: Path to MT5 terminal executable (optional)
             timeout: Connection timeout in milliseconds (default: 60000)
             portable: Whether to use portable mode (default: False)
 
@@ -71,14 +69,14 @@ class MT5Client:
 
         # Connection attributes
         self.connection_state: ConnectionState = ConnectionState.DISCONNECTED
-        self.path: Optional[str] = path
         self.timeout: int = timeout
         self.portable: bool = portable
 
         # Authentication attributes
-        self.account_login: Optional[int] = None
-        self.account_password: Optional[str] = None
-        self.account_server: Optional[str] = None
+        self.account_login: int = 0
+        self.account_password: str = ""
+        self.account_server: str = ""
+        self.path: str = ""
 
         # Auto-reconnection attributes
         self.auto_reconnect_enabled: bool = False
@@ -88,11 +86,11 @@ class MT5Client:
 
         # Configuration attributes
         self.config: Dict[str, Any] = {}
-        self.config_path: Optional[str] = None
+        self.config_path: str = ""
 
         # Multi-account support
         self.accounts: Dict[str, Dict[str, Any]] = {}
-        self.current_account: Optional[str] = None
+        self.current_account: str = ""
 
         # Event system
         self._event_handlers: Dict[str, List[Callable]] = {
@@ -122,12 +120,12 @@ class MT5Client:
 
     def initialize(
         self,
-        login: Optional[int] = None,
-        password: Optional[str] = None,
-        server: Optional[str] = None,
-        path: Optional[str] = None,
-        timeout: Optional[int] = None,
-        portable: Optional[bool] = None
+        login: int = 0,
+        password: str = "",
+        server: str = "",
+        path: str = "",
+        timeout: int = 60000,
+        portable: bool = False
     ) -> bool:
         """
         Initialize connection to MT5 terminal.
@@ -218,9 +216,10 @@ class MT5Client:
 
     def connect(
         self,
-        login: Optional[int] = None,
-        password: Optional[str] = None,
-        server: Optional[str] = None
+        login: int = 0,
+        password: str = "",
+        server: str = "",
+        path: str = "",
     ) -> bool:
         """
         Connect to MT5 terminal (alias for initialize with login).
@@ -237,7 +236,7 @@ class MT5Client:
             >>> client = MT5Client()
             >>> client.connect(login=12345, password="pass", server="Demo")
         """
-        return self.initialize(login=login, password=password, server=server)
+        return self.initialize(login=login, password=password, server=server, path=path)
 
     def disconnect(self) -> bool:
         """
@@ -765,7 +764,8 @@ class MT5Client:
         account_name: str,
         login: int,
         password: str,
-        server: str
+        server: str,
+        path: str
     ) -> None:
         """
         Save account credentials for quick switching.
@@ -775,14 +775,15 @@ class MT5Client:
             login: Account login number
             password: Account password
             server: MT5 server name
-
+            path: Path to MT5 terminal executable
         Example:
-            >>> client.save_account('demo', 12345, 'pass', 'Demo-Server')
+            >>> client.save_account('demo', 12345, 'pass', 'Demo-Server', 'C:/Program Files/MT5/terminal64.exe')
         """
         self.accounts[account_name] = {
             'login': login,
             'password': password,
             'server': server,
+            'path': path,
             'saved_at': datetime.now().isoformat()
         }
         logger.success(f"Account '{account_name}' saved")

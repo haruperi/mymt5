@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Union, Dict, List, Any, Tuple
 from pathlib import Path
 import json
+import time as _time
 
 from .enums import OrderType
 from .utils import MT5Utils
@@ -52,6 +53,8 @@ class MT5Trade:
         price: Optional[float] = None,
         sl: Optional[float] = None,
         tp: Optional[float] = None,
+        sl_pips: Optional[float] = None,
+        tp_pips: Optional[float] = None,
         deviation: int = 20,
         magic: int = 0,
         comment: str = "",
@@ -78,10 +81,12 @@ class MT5Trade:
             Dict with order result or None on error
 
         Examples:
-            >>> # Market buy
+            >>> # Market buy with absolute prices
             >>> result = mt5_trade.execute("EURUSD", "BUY", 0.1, sl=1.1250, tp=1.1350)
-            >>> # Pending buy limit
-            >>> result = mt5_trade.execute("EURUSD", "BUY_LIMIT", 0.1, price=1.1300)
+            >>> # Market buy with pips (auto-converted)
+            >>> result = mt5_trade.execute("EURUSD", "BUY", 0.1, sl_pips=50, tp_pips=50)
+            >>> # Pending buy limit with pips (uses provided price as entry reference)
+            >>> result = mt5_trade.execute("EURUSD", "BUY_LIMIT", 0.1, price=1.1300, sl_pips=50, tp_pips=50)
         """
         try:
             # Build trade request
@@ -102,6 +107,23 @@ class MT5Trade:
             if request is None:
                 return None
 
+            # Convert pips to prices if requested and prices not provided
+            if (sl is None and sl_pips is not None) or (tp is None and tp_pips is not None):
+                info = mt5.symbol_info(symbol)
+                if info is None:
+                    logger.error(f"Cannot compute SL/TP in pips: missing symbol info for {symbol}")
+                else:
+                    pip_size = (info.point * 10) if info.digits in (3, 5) else info.point
+                    # Determine effective entry price: request['price'] for market/pending (build_request set it)
+                    entry_price = request.get('price')
+                    # Determine side (buy-like vs sell-like)
+                    t = request.get('type')
+                    is_buy = t in [mt5.ORDER_TYPE_BUY, mt5.ORDER_TYPE_BUY_LIMIT, mt5.ORDER_TYPE_BUY_STOP, mt5.ORDER_TYPE_BUY_STOP_LIMIT]
+                    if sl is None and sl_pips is not None:
+                        request['sl'] = entry_price - (sl_pips * pip_size) if is_buy else entry_price + (sl_pips * pip_size)
+                    if tp is None and tp_pips is not None:
+                        request['tp'] = entry_price + (tp_pips * pip_size) if is_buy else entry_price - (tp_pips * pip_size)
+
             # Send order
             result = self._send_request(request)
 
@@ -117,6 +139,8 @@ class MT5Trade:
         volume: float,
         sl: Optional[float] = None,
         tp: Optional[float] = None,
+        sl_pips: Optional[float] = None,
+        tp_pips: Optional[float] = None,
         **kwargs
     ) -> Optional[Dict]:
         """
@@ -133,8 +157,26 @@ class MT5Trade:
             Dict with order result or None on error
 
         Examples:
+            >>> # Prices
             >>> result = mt5_trade.buy("EURUSD", 0.1, sl=1.1250, tp=1.1350)
+            >>> # Or pips (converted automatically)
+            >>> result = mt5_trade.buy("EURUSD", 0.1, sl_pips=50, tp_pips=50)
         """
+        # Convert pips to absolute prices if requested
+        if (sl is None and sl_pips is not None) or (tp is None and tp_pips is not None):
+            info = mt5.symbol_info(symbol)
+            tick = mt5.symbol_info_tick(symbol)
+            if info is None or tick is None:
+                logger.error(f"Cannot compute SL/TP in pips: missing symbol info/tick for {symbol}")
+            else:
+                # pip size: for most FX, a pip is 10 points when digits in {3,5}
+                pip_size = (info.point * 10) if info.digits in (3, 5) else info.point
+                entry_price = tick.ask  # buy uses ask
+                if sl is None and sl_pips is not None:
+                    sl = entry_price - (sl_pips * pip_size)
+                if tp is None and tp_pips is not None:
+                    tp = entry_price + (tp_pips * pip_size)
+
         return self.execute(symbol, OrderType.BUY, volume, sl=sl, tp=tp, **kwargs)
 
     def sell(
@@ -143,6 +185,8 @@ class MT5Trade:
         volume: float,
         sl: Optional[float] = None,
         tp: Optional[float] = None,
+        sl_pips: Optional[float] = None,
+        tp_pips: Optional[float] = None,
         **kwargs
     ) -> Optional[Dict]:
         """
@@ -159,8 +203,25 @@ class MT5Trade:
             Dict with order result or None on error
 
         Examples:
+            >>> # Prices
             >>> result = mt5_trade.sell("EURUSD", 0.1, sl=1.1350, tp=1.1250)
+            >>> # Or pips (converted automatically)
+            >>> result = mt5_trade.sell("EURUSD", 0.1, sl_pips=50, tp_pips=50)
         """
+        # Convert pips to absolute prices if requested
+        if (sl is None and sl_pips is not None) or (tp is None and tp_pips is not None):
+            info = mt5.symbol_info(symbol)
+            tick = mt5.symbol_info_tick(symbol)
+            if info is None or tick is None:
+                logger.error(f"Cannot compute SL/TP in pips: missing symbol info/tick for {symbol}")
+            else:
+                pip_size = (info.point * 10) if info.digits in (3, 5) else info.point
+                entry_price = tick.bid  # sell uses bid
+                if sl is None and sl_pips is not None:
+                    sl = entry_price + (sl_pips * pip_size)
+                if tp is None and tp_pips is not None:
+                    tp = entry_price - (tp_pips * pip_size)
+
         return self.execute(symbol, OrderType.SELL, volume, sl=sl, tp=tp, **kwargs)
 
     def build_request(
@@ -362,8 +423,8 @@ class MT5Trade:
             >>> result = mt5_trade.modify_order(12345, price=1.1300, sl=1.1250)
         """
         try:
-            # Get order info
-            order = mt5.orders_get(ticket=ticket)
+            # Get order info (ensure native int ticket)
+            order = mt5.orders_get(ticket=int(ticket))
             if order is None or len(order) == 0:
                 logger.error(f"Order {ticket} not found")
                 return None
@@ -373,7 +434,7 @@ class MT5Trade:
             # Build modification request
             request = {
                 "action": mt5.TRADE_ACTION_MODIFY,
-                "order": ticket,
+                "order": int(ticket),
                 "symbol": order.symbol,
                 "type": order.type,
                 "volume": order.volume_current,
@@ -429,10 +490,10 @@ class MT5Trade:
             results = []
 
             if ticket:
-                # Cancel specific order
+                # Cancel specific order (ensure native int)
                 request = {
                     "action": mt5.TRADE_ACTION_REMOVE,
-                    "order": ticket,
+                    "order": int(ticket),
                 }
                 result = self._send_request(request)
                 return result
@@ -449,7 +510,7 @@ class MT5Trade:
                 for _, order in orders.iterrows():
                     request = {
                         "action": mt5.TRADE_ACTION_REMOVE,
-                        "order": order.ticket,
+                        "order": int(order.ticket),
                     }
                     result = self._send_request(request)
                     if result:
@@ -536,7 +597,7 @@ class MT5Trade:
         try:
             # Get position
             if ticket:
-                position = mt5.positions_get(ticket=ticket)
+                position = mt5.positions_get(ticket=int(ticket))
             else:
                 position = mt5.positions_get(symbol=symbol)
 
@@ -550,7 +611,7 @@ class MT5Trade:
             request = {
                 "action": mt5.TRADE_ACTION_SLTP,
                 "symbol": symbol,
-                "position": position.ticket,
+                "position": int(position.ticket),
             }
 
             if sl is not None:
@@ -686,9 +747,9 @@ class MT5Trade:
             >>> mt5_trade.reverse_position("EURUSD")
         """
         try:
-            # Get position
-            if ticket:
-                position = mt5.positions_get(ticket=ticket)
+            # Get position (ensure native int for ticket)
+            if ticket is not None:
+                position = mt5.positions_get(ticket=int(ticket))
             else:
                 position = mt5.positions_get(symbol=symbol)
 
@@ -698,15 +759,19 @@ class MT5Trade:
 
             position = position[0]
 
-            # Close current position and open opposite
-            if position.type == mt5.POSITION_TYPE_BUY:
-                # Close buy, open sell
-                result = self.sell(symbol, position.volume * 2)  # Double volume to reverse
-            else:
-                # Close sell, open buy
-                result = self.buy(symbol, position.volume * 2)
+            # First close current position
+            close_result = self.close_position(ticket=position.ticket)
+            if not close_result or close_result.get('retcode') != mt5.TRADE_RETCODE_DONE:
+                logger.error("Failed to close existing position for reversal")
+                return None
 
-            return result
+            # Then open opposite with original volume
+            if position.type == mt5.POSITION_TYPE_BUY:
+                open_result = self.sell(symbol, position.volume)
+            else:
+                open_result = self.buy(symbol, position.volume)
+
+            return open_result
 
         except Exception as e:
             logger.error(f"Error reversing position: {e}")
@@ -761,8 +826,14 @@ class MT5Trade:
                 else:
                     return (position.price_open - tick.ask) * 10000
             elif metric == 'duration':
-                duration = datetime.now() - datetime.fromtimestamp(position.time)
-                return duration.total_seconds()
+                # Prefer MT5 server clock (tick.time) for consistent epoch
+                tick = mt5.symbol_info_tick(position.symbol)
+                if tick is not None and getattr(tick, 'time', None):
+                    seconds = float(tick.time) - float(position.time)
+                else:
+                    # Fallback to system clock
+                    seconds = float(_time.time()) - float(position.time)
+                return max(0.0, seconds)
             elif metric == 'current_price':
                 tick = mt5.symbol_info_tick(position.symbol)
                 return tick.bid if position.type == mt5.POSITION_TYPE_BUY else tick.ask
@@ -785,7 +856,8 @@ class MT5Trade:
                     'profit_points': (current_price - position.price_open) * 10000 if position.type == mt5.POSITION_TYPE_BUY else (position.price_open - current_price) * 10000,
                     'sl': float(position.sl) if position.sl > 0 else None,
                     'tp': float(position.tp) if position.tp > 0 else None,
-                    'duration': (datetime.now() - datetime.fromtimestamp(position.time)).total_seconds(),
+                    # Prefer MT5 server clock (tick.time); fallback to system clock
+                    'duration': max(0.0, float((tick.time if (tick is not None and getattr(tick, 'time', None)) else _time.time())) - float(position.time)),
                 }
             else:
                 logger.error(f"Unknown metric: {metric}")
@@ -888,25 +960,51 @@ class MT5Trade:
             >>> order_info = mt5_trade.check_order(12345)
         """
         try:
-            order = mt5.orders_get(ticket=ticket)
+            native_ticket = int(ticket)
+            # 1) Check if this is actually a position ticket
+            pos = mt5.positions_get(ticket=native_ticket)
+            if pos is not None and len(pos) > 0:
+                p = pos[0]
+                return {
+                    'status': 'position',
+                    'ticket': native_ticket,
+                    'position': p._asdict()
+                }
 
-            if order is None or len(order) == 0:
-                # Check if it's a deal (closed order)
-                deal = mt5.history_deals_get(ticket=ticket)
-                if deal and len(deal) > 0:
-                    return {
-                        'status': 'closed',
-                        'ticket': ticket,
-                        'deal': deal[0]._asdict()
-                    }
-                return None
+            # 2) Try open orders
+            order = mt5.orders_get(ticket=native_ticket)
 
-            order = order[0]
-            return {
-                'status': 'open',
-                'ticket': ticket,
-                'order': order._asdict()
-            }
+            if order is not None and len(order) > 0:
+                o = order[0]
+                return {
+                    'status': 'open',
+                    'ticket': native_ticket,
+                    'order': o._asdict()
+                }
+
+            # 3) Not found among open orders; check historical orders
+            hist_orders = mt5.history_orders_get(ticket=native_ticket)
+            if hist_orders is not None and len(hist_orders) > 0:
+                ho = hist_orders[0]
+                return {
+                    'status': 'historical_order',
+                    'ticket': native_ticket,
+                    'order': ho._asdict()
+                }
+
+            # 4) Finally check deals (fills)
+            deal = mt5.history_deals_get(ticket=native_ticket)
+            if deal is not None and len(deal) > 0:
+                return {
+                    'status': 'closed',
+                    'ticket': native_ticket,
+                    'deal': deal[0]._asdict()
+                }
+
+            # Nothing found; include last_error for diagnostics
+            code, desc = mt5.last_error()
+            logger.info(f"Order {native_ticket} not found; last_error={code} - {desc}")
+            return None
 
         except Exception as e:
             logger.error(f"Error checking order: {e}")

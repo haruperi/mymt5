@@ -17,6 +17,19 @@ from mymt5.data import MT5Data
 from mymt5.enums import TimeFrame
 from datetime import datetime, timedelta
 import pandas as pd
+import configparser
+
+
+def _get_demo_credentials():
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    section = 'DEMO'
+    return (
+        int(config[section]['login']),
+        config[section]['password'],
+        config[section]['server'],
+        config[section]['path']
+    )
 
 
 def example1_basic_bars():
@@ -27,8 +40,8 @@ def example1_basic_bars():
 
     # Initialize client and data
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -51,8 +64,8 @@ def example2_date_range():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -64,7 +77,8 @@ def example2_date_range():
     if bars is not None:
         print(f"\nRetrieved {len(bars)} daily bars from {start.date()} to {end.date()}")
         print(f"\nSummary statistics:")
-        print(bars[['open', 'high', 'low', 'close']].describe())
+        # Columns are capitalized after recent changes
+        print(bars[['Open', 'High', 'Low', 'Close']].describe())
 
     client.disconnect()
 
@@ -76,8 +90,8 @@ def example3_tick_data():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -88,11 +102,11 @@ def example3_tick_data():
         print(f"\nFirst 5 ticks:")
         print(ticks.head())
 
-        # Calculate bid-ask spread
-        ticks['spread'] = ticks['ask'] - ticks['bid']
-        print(f"\nAverage spread: {ticks['spread'].mean():.5f}")
-        print(f"Min spread: {ticks['spread'].min():.5f}")
-        print(f"Max spread: {ticks['spread'].max():.5f}")
+        # Calculate bid-ask spread (columns are capitalized)
+        ticks['Spread'] = ticks['Ask'] - ticks['Bid']
+        print(f"\nAverage spread: {ticks['Spread'].mean():.5f}")
+        print(f"Min spread: {ticks['Spread'].min():.5f}")
+        print(f"Max spread: {ticks['Spread'].max():.5f}")
 
     client.disconnect()
 
@@ -104,8 +118,8 @@ def example4_streaming_ticks():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -138,8 +152,8 @@ def example5_streaming_bars():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -170,8 +184,8 @@ def example6_data_processing():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -187,7 +201,7 @@ def example6_data_processing():
         # Normalize data
         normalized = data.process(clean_bars, 'normalize', method='minmax')
         print("\nNormalized close prices (first 5):")
-        print(normalized[['close', 'close_normalized']].head())
+        print(normalized[['Close', 'Close_normalized']].head())
 
         # Resample to 4H
         resampled = data.process(clean_bars, 'resample', timeframe='4h')
@@ -211,8 +225,8 @@ def example7_caching():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -254,8 +268,8 @@ def example8_export_data():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -274,10 +288,6 @@ def example8_export_data():
         pickle_success = data.export(bars, "data/eurusd_h1.pkl", format='pickle')
         print(f"Pickle export: {'Success' if pickle_success else 'Failed'}")
 
-        # Try Parquet (may fail if pyarrow not installed)
-        parquet_success = data.export(bars, "data/eurusd_h1.parquet", format='parquet')
-        print(f"Parquet export: {'Success' if parquet_success else 'Failed (pyarrow not installed)'}")
-
     client.disconnect()
 
 
@@ -288,8 +298,8 @@ def example9_statistics():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
@@ -329,8 +339,8 @@ def example10_complete_workflow():
     print("="*60)
 
     client = MT5Client()
-    client.initialize()
-    client.connect_from_config()
+    login, password, server, path = _get_demo_credentials()
+    client.initialize(login=login, password=password, server=server, path=path)
 
     data = MT5Data(client=client)
 
