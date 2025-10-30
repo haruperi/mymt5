@@ -1,219 +1,39 @@
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
-
-# Visual Studio cache/options directory
-.vs/
-
-# Visual Studio Code
-.vscode/
-
-# Rider
-.idea/
-
-# User-specific files
-*.rsuser
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
-
-# .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# NuGet Packages
-*.nupkg
-*.snupkg
-**/packages/*
-!**/packages/build/
-*.nuget.props
-*.nuget.targets
-*.nuget.dgspec.json
-
-# MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-
-# NUnit
-*.VisualState.xml
-TestResult.xml
-nunit-*.xml
-
-# Coverage
-coverage*.json
-coverage*.xml
-coverage*.info
-*.coverage
-*.coveragexml
-
-# MetaTrader 5 / MQL5
-*.ex5
-*.ex4
-*.mqh.backup
-*.mq5.backup
-Logs/
-Files/
-MQL5/Logs/
-MQL5/Files/
-
-# OS Files
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-*.lnk
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-
-# Linux
-*~
-.directory
-.Trash-*
-
-# IDE - JetBrains
-.idea/
-*.iml
-*.iws
-*.ipr
-out/
-
-# Temporary files
-*.tmp
-*.temp
-*.swp
-*.swo
-*~
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Compiled files
-*.dll
-*.pdb
-*.cache
-
-# Package files
-*.rar
-*.zip
-*.7z
-*.tar
-*.gz
+# Ignore sensitive/local config
+config.ini
 
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-# Egg info directories
+*.pyc
+*.pyo
+*.pyd
 *.egg-info/
-**/*.egg-info/
-**/.*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
-.hypothesis/
-.pytype/
-cython_debug/
+
+# Virtual environments
 venv/
-env/
-ENV/
-env.bak/
-venv.bak/
+.env/
+.venv/
 
-# Python IDEs
-.ropeproject
-.pydevproject
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
-# Data and logs directories
+# Logs and outputs
 logs/
 *.log
-data/cache/
-data/history/
-data/reports/
+error_handling.log
 
-# Config files (keep examples, ignore actual configs)
-config.ini
-.env
+# Build artifacts
+build/
+dist/
+*.whl
+*.tar.gz
 
-# Sensitive JSON files (logs, configs with credentials)
-*.json
-!*.json.example
-!package.json
-!package-lock.json
-!tsconfig.json
-!pyproject.toml.json
+# Data (keep if large/local)
+data/
 
-# Claude AI settings (may contain local paths)
-.claude/
-
-.history/
-*.csv
-
-# Windows reserved device names
-nul
-con
-prn
-aux
-com1
-com2
-com3
-com4
-lpt1
-lpt2
-lpt3
+# Cache
+.cache/
+.mypy_cache/
+.pytest_cache/
