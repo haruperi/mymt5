@@ -1,7 +1,9 @@
+# Core dependencies
 MetaTrader5>=5.0.0
 pandas>=1.3.0
 numpy>=1.21.0
 python-dateutil>=2.8.0
 
-LoggerSystem @ git+https://github.com/haruperi/LoggerSystem.git@main
+# Logger
+mylogger @ git+https://github.com/haruperi/mylogger.git@main
 

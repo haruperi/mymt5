@@ -1574,3 +1574,4 @@ This user guide covers the core functionality of MyMT5. For more information:
 Happy Trading! 📈
 
 
+
